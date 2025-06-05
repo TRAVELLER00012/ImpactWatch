@@ -8,9 +8,14 @@ const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth,window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
+camera.position.z = 100
+const light = new THREE.AmbientLight(0x404040,500)
+scene.add(light)
+ 
 const gltf_loader = new GLTFLoader()
 let earth_model = null
-let sun_model = null;
+let earth_pivot = null
+let sun_model = null
 
 const world_center = new THREE.Group()
 scene.add(world_center)
@@ -29,15 +34,26 @@ gltf_loader.load("./assets/models/sun.glb", function (gltf) {
 }, undefined, function (err) {
     console.log(err);
 });
+gltf_loader.load("./assets/models/earth.glb", function (gltf) {
+    gltf.scene.scale.set(20,20,20)
 
+    const box = new THREE.Box3().setFromObject(gltf.scene)
+    const center = new THREE.Vector3()
+    box.getCenter(center)
+    gltf.scene.position.sub(center)
+    gltf.scene.position.x = 125
+    earth_pivot = new THREE.Group()
+    earth_pivot.add(gltf.scene)
+    // earth_pivot.position.set(150,0,0)
 
-const light = new THREE.AmbientLight(0x404040,500)
-scene.add(light)
- 
-camera.position.z = 100
+    earth_model = gltf.scene
+    scene.add(earth_pivot)
+
+}, undefined, function (err) {
+    console.log(err);
+});
 
 // window.addEventListener("contextmenu",(event)=>event.preventDefault())
-
 
 let isRightMouseDown = false;
 window.addEventListener("mousedown", (event) => {
@@ -80,11 +96,19 @@ window.addEventListener("keyup",(event)=>{
 })
 
 function animate(){
-    if (earth_model)
+    if (earth_model){
         earth_model.rotation.y += 0.001745
+        earth_pivot.rotation.y += 0.0015
+        const earth_pos = new THREE.Vector3()
+        earth_model.getWorldPosition(earth_pos)
+        
+        camera.position.set(earth_pos.x,earth_pos.y ,earth_pos.z + 10)
+    }
     
     if (sun_model)
         sun_model.rotation.y += 0.003
+
+    
     
     
     if (keys.w) camera.position.z -= 0.03
@@ -94,8 +118,8 @@ function animate(){
 
     if (keys.space) camera.position.y += 0.03
     if (keys.shift) camera.position.y -= 0.03
+    
     renderer.render(scene, camera)
 
 }
-
 renderer.setAnimationLoop(animate)
