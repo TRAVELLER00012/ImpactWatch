@@ -8,27 +8,56 @@ const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth,window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const loader = new GLTFLoader()
+const gltf_loader = new GLTFLoader()
 let earth_model = null
-loader.load("./assets/models/earth.glb", function(gltf){
-    gltf.scene.scale.set(15, 15, 15)
-    gltf.scene.position.set(0, 0, 0) 
-    scene.add(gltf.scene)
-    earth_model = gltf.scene
-},undefined,function(err){
-    console.log(err)
-})
+let sun_model = null;
 
-const light = new THREE.AmbientLight(0x404040,100)
+const world_center = new THREE.Group()
+scene.add(world_center)
+
+gltf_loader.load("./assets/models/sun.glb", function (gltf) {
+    gltf.scene.scale.set(25,25,25)
+    const box = new THREE.Box3().setFromObject(gltf.scene)
+    const center = new THREE.Vector3()
+    box.getCenter(center)
+
+    gltf.scene.position.sub(center)
+    
+    world_center.add(gltf.scene)
+    sun_model = world_center
+
+}, undefined, function (err) {
+    console.log(err);
+});
+
+
+const light = new THREE.AmbientLight(0x404040,500)
 scene.add(light)
  
-camera.position.z = 10
+camera.position.z = 100
 
-window.addEventListener("mousemove",(event)=>{
-    const x = (event.clientX / window.innerWidth) * 2 - 1 
-    const y = (event.clientY / window.innerHeight) * 2 - 1
-    camera.rotation.y = x
-    camera.rotation.x = y
+// window.addEventListener("contextmenu",(event)=>event.preventDefault())
+
+
+let isRightMouseDown = false;
+window.addEventListener("mousedown", (event) => {
+    if (event.button === 0)
+        isRightMouseDown = true
+});
+
+window.addEventListener("mouseup", (event) => {
+    if (event.button === 0)
+        isRightMouseDown = false
+});
+
+window.addEventListener("mouseleave", () => {
+    isRightMouseDown = false
+});
+
+window.addEventListener("mousemove", (event) => {
+    if (!isRightMouseDown) return
+    camera.rotation.y += event.movementX * 0.002
+    camera.rotation.x += event.movementY * 0.002
 })
 
 
@@ -51,9 +80,12 @@ window.addEventListener("keyup",(event)=>{
 })
 
 function animate(){
-    if (earth_model){
-        earth_model.rotation.y += 0.0015
-    }
+    if (earth_model)
+        earth_model.rotation.y += 0.001745
+    
+    if (sun_model)
+        sun_model.rotation.y += 0.003
+    
     
     if (keys.w) camera.position.z -= 0.03
     if (keys.s) camera.position.z += 0.03
