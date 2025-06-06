@@ -13,8 +13,6 @@ const light = new THREE.AmbientLight(0x404040,200)
 scene.add(light)
  
 const gltf_loader = new GLTFLoader()
-let moon_model = null
-let moon_pivot = null
 
 const sun = new Body(gltf_loader,"sun",[30,30,30],null,scene)
 sun.load()
@@ -23,21 +21,22 @@ sun.load()
 const earth = new Body(gltf_loader,"earth",[20,20,20],[125,0,0],scene)
 earth.load()
 
+const moon = new Body(gltf_loader,"moon",[1,1,1],null,scene)
+moon.load()
 
 
+// gltf_loader.load("./assets/models/moon.glb", function (gltf) {
+//     gltf.scene.scale.set(1,1,1)
 
-gltf_loader.load("./assets/models/moon.glb", function (gltf) {
-    gltf.scene.scale.set(1,1,1)
+//     moon_pivot = new THREE.Group()
+//     moon_pivot.add(gltf.scene)
 
-    moon_pivot = new THREE.Group()
-    moon_pivot.add(gltf.scene)
+//     moon_model = gltf.scene
+//     scene.add(moon_pivot)
 
-    moon_model = gltf.scene
-    scene.add(moon_pivot)
-
-}, undefined, function (err) {
-    console.log(err);
-});
+// }, undefined, function (err) {
+//     console.log(err);
+// });
 
 // window.addEventListener("contextmenu",(event)=>event.preventDefault())
 
@@ -88,14 +87,14 @@ function animate(){
         const earth_pos = new THREE.Vector3()
         earth.model.getWorldPosition(earth_pos)
 
-        if(moon_model){
-            moon_pivot.position.set(earth_pos.x,earth_pos.y,earth_pos.z)
-            moon_model.position.z = -25
-            moon_model.rotation.y += 0.0005
-            moon_pivot.rotation.y += 0.0005
+        if(moon.model){
+            moon.pivot.position.set(earth_pos.x,earth_pos.y,earth_pos.z)
+            moon.model.position.z = -25
+            moon.model.rotation.y += 0.0005
+            moon.pivot.rotation.y += 0.0005
 
             const moon_pos = new THREE.Vector3()
-            moon_model.getWorldPosition(moon_pos)
+            moon.model.getWorldPosition(moon_pos)
             // camera.position.set(moon_pos.x,moon_pos.y ,moon_pos.z + 5)
         }
         
