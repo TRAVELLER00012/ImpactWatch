@@ -45,11 +45,3 @@ export class Body{
         });
     }
 }
-export class Sun extends Body{
-    constructor(loader,model_name,scale,scene){
-        super(loader,model_name,scale,(0,0,0),scene)
-    }
-
-
-
-}
