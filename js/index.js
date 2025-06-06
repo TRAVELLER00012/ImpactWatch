@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
-
+import { Body, Sun } from "./objects"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
@@ -13,47 +13,18 @@ const light = new THREE.AmbientLight(0x404040,200)
 scene.add(light)
  
 const gltf_loader = new GLTFLoader()
-let earth_model = null
-let earth_pivot = null
-let sun_model = null
-const world_center = new THREE.Group()
-scene.add(world_center)
-
 let moon_model = null
 let moon_pivot = null
 
-gltf_loader.load("./assets/models/sun.glb", function (gltf) {
-    gltf.scene.scale.set(30,30,30)
-    const box = new THREE.Box3().setFromObject(gltf.scene)
-    const center = new THREE.Vector3()
-    box.getCenter(center)
+const sun = new Body(gltf_loader,"sun",[30,30,30],null,scene)
+sun.load()
 
-    gltf.scene.position.sub(center)
-    
-    world_center.add(gltf.scene)
-    sun_model = world_center
 
-}, undefined, function (err) {
-    console.log(err);
-});
-gltf_loader.load("./assets/models/earth.glb", function (gltf) {
-    gltf.scene.scale.set(20,20,20)
+const earth = new Body(gltf_loader,"earth",[20,20,20],[125,0,0],scene)
+earth.load()
 
-    const box = new THREE.Box3().setFromObject(gltf.scene)
-    const center = new THREE.Vector3()
-    box.getCenter(center)
-    gltf.scene.position.sub(center)
-    gltf.scene.position.x = 125
-    earth_pivot = new THREE.Group()
-    earth_pivot.add(gltf.scene)
-    
 
-    earth_model = gltf.scene
-    scene.add(earth_pivot)
 
-}, undefined, function (err) {
-    console.log(err);
-});
 
 gltf_loader.load("./assets/models/moon.glb", function (gltf) {
     gltf.scene.scale.set(1,1,1)
@@ -111,11 +82,11 @@ window.addEventListener("keyup",(event)=>{
 })
 
 function animate(){
-    if (earth_model){
-        earth_model.rotation.y += 0.001745
-        earth_pivot.rotation.y += 0.0012
+    if (earth.model){
+        earth.model.rotation.y += 0.001745
+        earth.pivot.rotation.y += 0.0012
         const earth_pos = new THREE.Vector3()
-        earth_model.getWorldPosition(earth_pos)
+        earth.model.getWorldPosition(earth_pos)
 
         if(moon_model){
             moon_pivot.position.set(earth_pos.x,earth_pos.y,earth_pos.z)
@@ -125,14 +96,14 @@ function animate(){
 
             const moon_pos = new THREE.Vector3()
             moon_model.getWorldPosition(moon_pos)
-            camera.position.set(moon_pos.x,moon_pos.y ,moon_pos.z + 5)
+            // camera.position.set(moon_pos.x,moon_pos.y ,moon_pos.z + 5)
         }
         
         // camera.position.set(earth_pos.x,earth_pos.y ,earth_pos.z + 20)
     }
     
-    if (sun_model)
-        sun_model.rotation.y += 0.003
+    if (sun.model)
+        sun.pivot.rotation.y += 0.003
 
     
     
