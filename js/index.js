@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { Body } from "./objects"
+import { keys, initialize } from "./controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
@@ -18,52 +19,13 @@ const gltf_loader = new GLTFLoader()
 const sun = new Body(gltf_loader,"sun",[30,30,30],null,scene)
 sun.load()
 
-
 const earth = new Body(gltf_loader,"earth",[20,20,20],[125,0,0],scene)
 earth.load()
 
 const moon = new Body(gltf_loader,"moon",[1,1,1],null,scene)
 moon.load()
 
-let isRightMouseDown = false;
-window.addEventListener("mousedown", (event) => {
-    if (event.button === 0)
-        isRightMouseDown = true
-});
-
-window.addEventListener("mouseup", (event) => {
-    if (event.button === 0)
-        isRightMouseDown = false
-});
-
-window.addEventListener("mouseleave", () => {
-    isRightMouseDown = false
-});
-
-window.addEventListener("mousemove", (event) => {
-    if (!isRightMouseDown) return
-    camera.rotation.y += event.movementX * 0.002
-    camera.rotation.x += event.movementY * 0.002
-})
-
-
-const keys = {
-    "w":false,
-    "s":false,
-    "a":false,
-    "d":false,
-    "space":false,
-    "shift":false
-}
-window.addEventListener("keydown",(event)=>{
-    console.log(event.key)
-    keys[event.key.toLowerCase()] = true
-    if (event.key == " ") keys.space = true
-})
-window.addEventListener("keyup",(event)=>{
-    keys[event.key.toLowerCase()] = false
-    if (event.key == " ") keys.space = false
-})
+initialize(camera)
 
 function animate(){
     if (earth.model){
