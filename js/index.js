@@ -25,22 +25,6 @@ earth.load()
 const moon = new Body(gltf_loader,"moon",[1,1,1],null,scene)
 moon.load()
 
-
-// gltf_loader.load("./assets/models/moon.glb", function (gltf) {
-//     gltf.scene.scale.set(1,1,1)
-
-//     moon_pivot = new THREE.Group()
-//     moon_pivot.add(gltf.scene)
-
-//     moon_model = gltf.scene
-//     scene.add(moon_pivot)
-
-// }, undefined, function (err) {
-//     console.log(err);
-// });
-
-// window.addEventListener("contextmenu",(event)=>event.preventDefault())
-
 let isRightMouseDown = false;
 window.addEventListener("mousedown", (event) => {
     if (event.button === 0)

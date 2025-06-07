@@ -2,3 +2,44 @@ body{
     /* cursor: none; */
     margin: 0;
 }
+
+
+div.parent_menu{
+    position: absolute;
+    color: white;
+    width: 13%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: rgb(22,23,22);
+    border-radius: 10px;
+    text-align: left;
+    padding: 5px 20px;
+    cursor: pointer;
+    right: 3%;
+    top: 5%;
+}
+div.parent_menu .heading{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+div.parent_menu .heading svg{
+    width: 18%;
+}
+ul.menu{
+    padding: 0;
+    list-style: none;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: rgb(22,23,22);;
+    text-align: center;
+}
+ul.menu li{
+    margin-bottom: 10px;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.3s;
+}
+ul.menu li:hover{
+    opacity: 1;
+}
