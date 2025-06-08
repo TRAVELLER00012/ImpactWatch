@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { Body } from "./objects"
-import { keys, initialize } from "./controls"
+import { keys, o_selected, initialize, setSelected } from "./controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
@@ -9,7 +9,6 @@ camera.layers.enable(1)
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth,window.innerHeight)
 document.body.appendChild(renderer.domElement)
-
 camera.position.z = 100
 const light = new THREE.AmbientLight(0x404040,200)
 scene.add(light)
@@ -25,8 +24,9 @@ earth.load()
 const moon = new Body(gltf_loader,"moon",[1,1,1],null,scene)
 moon.load()
 
-initialize(camera)
 
+
+initialize(camera)
 function animate(){
     if (earth.model){
         earth.model.rotation.y += 0.001745
@@ -42,18 +42,27 @@ function animate(){
 
             const moon_pos = new THREE.Vector3()
             moon.model.getWorldPosition(moon_pos)
-            // camera.position.set(moon_pos.x,moon_pos.y ,moon_pos.z + 5)
+            
+            if(o_selected.moon)
+                camera.position.set(moon_pos.x,moon_pos.y ,moon_pos.z + 5)
         }
-        
-        // camera.position.set(earth_pos.x,earth_pos.y ,earth_pos.z + 20)
-    }
-    
-    if (sun.model){
-        sun.pivot.rotation.y += 0.003
+        if (o_selected.earth)
+            camera.position.set(earth_pos.x,earth_pos.y ,earth_pos.z + 20)
     }
 
     
-    
+    if (sun.model){
+        sun.pivot.rotation.y += 0.003
+        const sunPos = new THREE.Vector3()
+        sun.pivot.getWorldPosition(sunPos)
+        if (o_selected.sun)
+            camera.position.set(sunPos.x,sunPos.y ,sunPos.z + 80)
+    }
+
+    if(o_selected.freeview){
+        camera.position.set(0,0,100)
+        setSelected(null,camera)
+    }
     
     if (keys.w) camera.position.z -= 0.03
     if (keys.s) camera.position.z += 0.03

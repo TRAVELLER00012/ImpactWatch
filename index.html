@@ -13,13 +13,13 @@
             <path fill="none" d="M0 0h24v24H0V0z"></path>
             <path d="M4 18h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1zm0-5h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1zM3 7c0 .55.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1z" fill="#ffffff" class="color000000 svgShape"></path>
             </svg>
-            <span class="hidden">Select An Object</span>
+            <span>Select An Object</span>
         </div>
         <ul class="menu hidden">
             <li id="sun">Sun</li>
             <li id="earth">Earth</li>
             <li id="moon">Moon</li>
-            <li id="freeview">FreeView</li>
+            <li id="freeview">Free View</li>
         </ul>
     </div>
     <script src="js/index.js" type="module"></script>
@@ -32,10 +32,8 @@
             hidden = !hidden
             if(hidden){
                 elements[0].style.display = "none"
-                elements[1].style.display = "none"
             }else{
                 elements[0].style.display = "inline"
-                elements[1].style.display = "block"
             }
         }
 
