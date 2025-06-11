@@ -2,7 +2,7 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { Body } from "./objects"
 import { keys, o_selected, initialize, setSelected } from "./controls"
-
+import { get_data } from "./playground"
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
 camera.layers.enable(1)
@@ -25,7 +25,7 @@ const moon = new Body(gltf_loader,"moon",[1,1,1],null,scene)
 moon.load()
 
 
-
+await get_data()
 initialize(camera)
 function animate(){
     if (earth.model){
