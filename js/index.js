@@ -1,8 +1,7 @@
 import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
-import { Body } from "./objects"
+import { Body, Asteroids } from "./objects"
 import { keys, o_selected, initialize, setSelected } from "./controls"
-import { Asteroids } from "./asteroids"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
