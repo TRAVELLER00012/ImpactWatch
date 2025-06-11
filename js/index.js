@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { Body, Asteroids } from "./objects"
-import { keys, o_selected, initialize, setSelected } from "./controls"
+import { keys, o_selected, initialize, setSelectedCamera } from "./controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
@@ -36,7 +36,7 @@ for (let asteroid of asteroids_data){
     new_asteroid.load()
 }
 
-initialize(camera)
+initialize(camera, asteroids_data)
 function animate(){
     if (earth.model){
         earth.model.rotation.y += 0.001745
@@ -77,7 +77,7 @@ function animate(){
 
     if(o_selected.freeview){
         camera.position.set(0,0,100)
-        setSelected(null,camera)
+        setSelectedCamera(null,camera)
     }
 
     
