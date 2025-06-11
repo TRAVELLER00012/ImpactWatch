@@ -26,6 +26,7 @@ export class Asteroids{
                 // console.log(o)
                 converted_result.push({
                     "id":o.id,
+                    "name":o.name,
                     "diameter":(o.estimated_diameter.kilometers.estimated_diameter_max + o.estimated_diameter.kilometers.estimated_diameter_min) / (2*this.scale_size),
                     "hazardous": o.is_potentially_hazardous_asteroid,
                     "miss_distance":parseFloat(o.close_approach_data[0].miss_distance.kilometers)/this.distance_scale,
