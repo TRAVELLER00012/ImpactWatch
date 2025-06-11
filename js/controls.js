@@ -48,6 +48,19 @@ export function initialize(camera){
         if (event.key == " ") keys.space = false
     })
 
+    let hidden = false
+    const elements = document.getElementsByClassName("hidden")
+    const menu = document.getElementById("menu")
+
+    menu.onclick = () => {
+        hidden = !hidden
+        if(hidden){
+            elements[0].style.display = "none"
+        }else{
+            elements[0].style.display = "inline"
+        }
+    }
+
     const sun_o = document.getElementById("sun")
     const earth_o = document.getElementById("earth")
     const moon_o = document.getElementById("moon")
