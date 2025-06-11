@@ -2,7 +2,8 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { Body } from "./objects"
 import { keys, o_selected, initialize, setSelected } from "./controls"
-import { get_data } from "./playground"
+import { Asteroids } from "./asteroids"
+
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
 camera.layers.enable(1)
@@ -24,8 +25,18 @@ earth.load()
 const moon = new Body(gltf_loader,"moon",[1,1,1],null,scene)
 moon.load()
 
+const Asteroid = new Asteroids()
+Asteroid.velocity_scale = Math.floor(Math.random() * (1e5 - 1e4 + 1) + 1e4)
+const asteroids = []
+const asteroids_data = await Asteroid.get_asteroid_data()
 
-await get_data()
+console.log(asteroids_data)
+for (let asteroid of asteroids_data){
+    const new_asteroid = new Body(gltf_loader, "asteroid", [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  [125+asteroid.miss_distance,Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],scene)
+    asteroids.push(new_asteroid)
+    new_asteroid.load()
+}
+
 initialize(camera)
 function animate(){
     if (earth.model){
@@ -58,11 +69,18 @@ function animate(){
         if (o_selected.sun)
             camera.position.set(sunPos.x,sunPos.y ,sunPos.z + 80)
     }
+    for (let i in asteroids){
+        if(asteroids[i].model){
+            asteroids[i].model.rotation.y += 0.001745
+            asteroids[i].pivot.rotation.y += asteroids_data[i].velocity
+        }
+    }
 
     if(o_selected.freeview){
         camera.position.set(0,0,100)
         setSelected(null,camera)
     }
+
     
     if (keys.w) camera.position.z -= 0.03
     if (keys.s) camera.position.z += 0.03
