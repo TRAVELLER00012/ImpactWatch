@@ -36,6 +36,31 @@ for (let asteroid of asteroids_data){
     new_asteroid.load()
 }
 
+
+const raycaster = new THREE.Raycaster()
+const mouse = new THREE.Vector2()
+
+renderer.domElement.addEventListener("click",(event)=>{
+    mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1
+    mouse.y = (event.clientY / renderer.domElement.clientHeight) * 2 - 1
+    
+    raycaster.setFromCamera(mouse,camera)
+
+    const intersects = raycaster.intersectObjects(scene.children)
+
+    if (intersects.length > 0){
+        let clickedObject = intersects[0].object
+        while(clickedObject.parent && clickedObject.parent.name)
+            clickedObject = clickedObject.parent
+
+
+        if(clickedObject.name == sun.model_name) console.log("CLICKED ON SUN")
+        if(clickedObject.name == earth.model_name) console.log("CLICKED ON EARTH")
+        if(clickedObject.name == moon.model_name) console.log("CLICKED ON MOON")
+    }
+})
+
+
 initialize(camera,asteroids_data)
 function animate(){
     if (earth.model){

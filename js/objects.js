@@ -37,7 +37,7 @@ export class Body{
             
             this.pivot.add(gltf.scene)
             this.model = gltf.scene
-
+            this.model.name = this.model_name
             this.scene.add(this.pivot)
             
         }, undefined, function (err) {
