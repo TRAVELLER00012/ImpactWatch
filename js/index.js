@@ -75,10 +75,8 @@ function animate(){
         }
     }
 
-    if(o_selected.freeview){
-        camera.position.set(0,0,100)
+    if(o_selected.freeview)
         setSelectedCamera(null)
-    }
 
     if(o_selected.asteroids){
         for (let i in Object.keys(asteroids_stat)) 
