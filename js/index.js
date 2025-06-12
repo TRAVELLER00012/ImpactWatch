@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { Body, Asteroids } from "./objects"
-import { keys, o_selected, initialize, setSelectedCamera } from "./controls"
+import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat} from "./controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
@@ -12,7 +12,7 @@ document.body.appendChild(renderer.domElement)
 camera.position.z = 100
 const light = new THREE.AmbientLight(0x404040,200)
 scene.add(light)
- 
+
 const gltf_loader = new GLTFLoader()
 
 const sun = new Body(gltf_loader,"sun",[30,30,30],null,scene)
@@ -36,7 +36,7 @@ for (let asteroid of asteroids_data){
     new_asteroid.load()
 }
 
-initialize(camera, asteroids_data)
+initialize(camera,asteroids_data)
 function animate(){
     if (earth.model){
         earth.model.rotation.y += 0.001745
@@ -77,10 +77,18 @@ function animate(){
 
     if(o_selected.freeview){
         camera.position.set(0,0,100)
-        setSelectedCamera(null,camera)
+        setSelectedCamera(null)
     }
 
-    
+    if(o_selected.asteroids){
+        for (let i in Object.keys(asteroids_stat)) 
+            if(Object.values(asteroids_stat)[i]){
+                const pos = new THREE.Vector3()
+                asteroids[i].model.getWorldPosition(pos)
+                camera.position.set(pos.x, pos.y,pos.z+3)
+            }
+    }
+
     if (keys.w) camera.position.z -= 0.03
     if (keys.s) camera.position.z += 0.03
     if (keys.a) camera.position.x -= 0.03

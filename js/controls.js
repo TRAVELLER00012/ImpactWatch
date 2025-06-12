@@ -14,8 +14,11 @@ export const o_selected = {
     freeview:false,
     asteroids: false
 }
+export const asteroids_stat = {}
+
 const elements = document.getElementsByClassName("elements")
 const menu = document.getElementById("menu")
+const parent_menu = document.getElementsByClassName("parent_menu")[0]
 const sun_o = document.getElementById("sun")
 const earth_o = document.getElementById("earth")
 const moon_o = document.getElementById("moon")
@@ -23,12 +26,12 @@ const freeview_o = document.getElementById("freeview")
 const asteroids_o = document.getElementById("asteroids")
 const select_object_label = document.getElementById("select_object_label")
 
-export function setSelectedCamera(key,camera,default_selected_val = true,default_other_val = false){
-        Object.keys(o_selected).forEach(k => o_selected[k] = default_other_val)
-        if (key && o_selected.hasOwnProperty(key)) o_selected[key] = default_selected_val
+export function setSelectedCamera(key,camera,default_selected_val = true,default_other_val = false,object = o_selected){
+        Object.keys(object).forEach(k => object[k] = default_other_val)
+        if (key && object.hasOwnProperty(key)) object[key] = default_selected_val
         if(camera) camera.rotation.set(0,0,0)
 }
-function setSelectedAsteroids(asteroids){
+function setSelectedAsteroids(camera,asteroids){
     setSelectedCamera("asteroids",null,!o_selected.asteroids)
     if (o_selected.asteroids){
         for (let asteroid of asteroids){
@@ -36,7 +39,12 @@ function setSelectedAsteroids(asteroids){
             item.textContent = asteroid.name.slice(1,-2)
             item.classList.add("asteroid")
             elements[0].appendChild(item)
+            asteroids_stat[asteroid.name.slice(1,-2)] = false
         }
+        const labels = document.getElementsByClassName("asteroid")
+        for (let label of labels)
+            label.onclick = () => setSelectedCamera(label.textContent,camera,true,false,asteroids_stat)
+    
 
         sun_o.style.display = "none"
         earth_o.style.display = "none"
@@ -86,14 +94,15 @@ export function initialize(camera,asteroids = []){
     })
 
     let hidden = false
-    let options_hidden = false
 
     menu.onclick = () => {
         hidden = !hidden
         if(hidden){
             elements[0].style.display = "none"
+            parent_menu.style.height = "fit-content"
         }else{
-            elements[0].style.display = "inline"
+            elements[0].style.display = "block"
+            parent_menu.style.height = "30%"
         }
     }
 
@@ -101,8 +110,6 @@ export function initialize(camera,asteroids = []){
     moon_o.onclick = () => setSelectedCamera("moon",camera)
     earth_o.onclick = () => setSelectedCamera("earth",camera)
     freeview_o.onclick = () => setSelectedCamera("freeview",camera)
-    asteroids_o.onclick = () =>{
-        setSelectedAsteroids(asteroids)
-    }
-}
+    asteroids_o.onclick = () => setSelectedAsteroids(camera,asteroids)
 
+}
