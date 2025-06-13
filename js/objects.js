@@ -80,7 +80,9 @@ export class Body{
 const api_key = import.meta.env.VITE_API_KEY
 
 export class Asteroids{
-    constructor(start_date = new Date(),end_date = new Date(), scale_size = 0.225, distance_scale = 1.2e6, velocity_scale = 1e4){
+    constructor(loader,scene,start_date = new Date(),end_date = new Date(), scale_size = 0.225, distance_scale = 1.2e6, velocity_scale = 1e4){
+        this.loader = loader
+        this.scene = scene
         this.scale_size = scale_size
         this.distance_scale = distance_scale
         this.velocity_scale = velocity_scale
@@ -113,5 +115,15 @@ export class Asteroids{
         }
         // console.log(converted_result)
         return converted_result
+    }
+
+    get_asteroid_bodies(data){
+        const asteroids = []
+        for (let asteroid of data){
+            const new_asteroid = new Body(this.loader, "asteroid", [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  [125+asteroid.miss_distance,Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],this.scene)
+            asteroids.push(new_asteroid)
+            new_asteroid.load()
+        }
+        return asteroids
     }
 }

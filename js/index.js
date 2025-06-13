@@ -27,16 +27,11 @@ earth.load()
 const moon = new Body(gltf_loader,"moon",[1,1,1],null,scene)
 moon.load()
 
-const Asteroid = new Asteroids()
+const Asteroid = new Asteroids(gltf_loader,scene)
 Asteroid.velocity_scale = Math.floor(Math.random() * (1e5 - 1e4 + 1) + 1e4)
-const asteroids = []
-const asteroids_data = await Asteroid.get_asteroid_data()
 
-for (let asteroid of asteroids_data){
-    const new_asteroid = new Body(gltf_loader, "asteroid", [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  [125+asteroid.miss_distance,Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],scene)
-    asteroids.push(new_asteroid)
-    new_asteroid.load()
-}
+const asteroids_data = await Asteroid.get_asteroid_data()
+const asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
 
 
 const raycaster = new THREE.Raycaster()
