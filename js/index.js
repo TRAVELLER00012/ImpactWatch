@@ -116,7 +116,7 @@ function animate(){
             if(Object.values(asteroids_stat)[i]){
                 const pos = new THREE.Vector3()
                 asteroids[i].model.getWorldPosition(pos)
-                camera.position.set(pos.x, pos.y,pos.z+10)
+                camera.position.set(pos.x, pos.y,pos.z+3)
                 asteroids[i].loadText(
                     fontLoader,
                     Body.generateInfo({
@@ -127,7 +127,7 @@ function animate(){
                         "Hazardous":asteroids_data[i].hazardous ? "YES" : "NO"
                     }),
                     {pos:new THREE.Vector3(pos.x + asteroids[i].scaleX + 5 , pos.y + asteroids[i].scaleY + 3 , pos.z)},
-                    100
+                    0.25
                 )
             }else asteroids[i].clearText()
         }
