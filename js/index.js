@@ -1,7 +1,9 @@
 import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
+import { FontLoader } from "three/addons/loaders/FontLoader.js"
 import { Body, Asteroids } from "./objects"
 import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat} from "./controls"
+
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
@@ -14,6 +16,7 @@ const light = new THREE.AmbientLight(0x404040,200)
 scene.add(light)
 
 const gltf_loader = new GLTFLoader()
+const fontLoader = new FontLoader()
 
 const sun = new Body(gltf_loader,"sun",[30,30,30],null,scene)
 sun.load()
@@ -29,7 +32,6 @@ Asteroid.velocity_scale = Math.floor(Math.random() * (1e5 - 1e4 + 1) + 1e4)
 const asteroids = []
 const asteroids_data = await Asteroid.get_asteroid_data()
 
-console.log(asteroids_data)
 for (let asteroid of asteroids_data){
     const new_asteroid = new Body(gltf_loader, "asteroid", [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  [125+asteroid.miss_distance,Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],scene)
     asteroids.push(new_asteroid)
@@ -68,15 +70,17 @@ function animate(){
         earth.pivot.rotation.y += 0.0012
         const earth_pos = new THREE.Vector3()
         earth.model.getWorldPosition(earth_pos)
+        earth.loadText(fontLoader,"hello world")
 
         if(moon.model){
             moon.pivot.position.set(earth_pos.x,earth_pos.y,earth_pos.z)
             moon.model.position.z = -25
             moon.model.rotation.y += 0.0005
             moon.pivot.rotation.y += 0.0005
-
+            
             const moon_pos = new THREE.Vector3()
             moon.model.getWorldPosition(moon_pos)
+            moon.loadText(fontLoader,"Hello",{pos:new THREE.Vector3(moon_pos.x + 3, moon_pos.y + 3, moon_pos.z)})
             
             if(o_selected.moon)
                 camera.position.set(moon_pos.x,moon_pos.y ,moon_pos.z + 5)
@@ -87,6 +91,7 @@ function animate(){
 
     
     if (sun.model){
+        sun.loadText(fontLoader,"Hello world",{model:sun.pivot})
         sun.pivot.rotation.y += 0.003
         const sunPos = new THREE.Vector3()
         sun.pivot.getWorldPosition(sunPos)

@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 import axios from "axios"
 
 export class Body{
@@ -18,6 +19,7 @@ export class Body{
         this.scene = scene
         this.pivot = new THREE.Group()
         this.model = null
+        this.textMesh = null
     }
     load(){
         this.loader.load(`./assets/models/${this.model_name}.glb`, (gltf) => {
@@ -43,6 +45,35 @@ export class Body{
         }, undefined, function (err) {
             console.log(err);
         });
+    }
+    loadText(fontLoader,text,pos_stat = {model: this.model},size=2,Material=THREE.MeshStandardMaterial){
+        fontLoader.load("./assets/fonts/helvetiker_regular.typeface.json",(font) => {
+            const geo = new TextGeometry(text,{
+                font: font,
+                size: size,
+                depth: 0,
+                curveSegments: 12,
+                bevelEnabled: false,
+            })
+        
+            const material = new Material({color:0xffffff})
+            const mesh = new THREE.Mesh(geo,material)
+            geo.center()
+            
+            if(this.textMesh){
+                this.textMesh.removeFromParent()
+            }
+            this.textMesh = mesh
+            if(pos_stat.model && !pos_stat.pos){
+                const pos = new THREE.Vector3()
+                pos_stat.model.getWorldPosition(pos)
+                mesh.position.set(pos.x+this.scaleX,pos.y+this.scaleY,pos.z)
+            }else{
+                mesh.position.set(pos_stat.pos.x,pos_stat.pos.y,pos_stat.pos.z)
+            }
+            this.scene.add(mesh)
+            
+        })
     }
 }
 
