@@ -3,9 +3,10 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 import axios from "axios"
 
 export class Body{
-    constructor(loader,model_name,scale,position,scene){
+    constructor(loader,model_name,scale,position,scene,detection_name = null){
         this.loader = loader
         this.model_name = model_name
+        this.detection_name = detection_name ? detection_name : model_name
         this.scaleX = scale[0]
         this.scaleY = scale[1]
         this.scaleZ = scale[2]
@@ -39,7 +40,7 @@ export class Body{
             
             this.pivot.add(gltf.scene)
             this.model = gltf.scene
-            this.model.name = this.model_name
+            this.model.name = this.detection_name
             this.scene.add(this.pivot)
             
         }, undefined, function (err) {
@@ -120,7 +121,7 @@ export class Asteroids{
     get_asteroid_bodies(data){
         const asteroids = []
         for (let asteroid of data){
-            const new_asteroid = new Body(this.loader, "asteroid", [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  [125+asteroid.miss_distance,Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],this.scene)
+            const new_asteroid = new Body(this.loader, "asteroid", [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  [125+asteroid.miss_distance,Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],this.scene,asteroid.name.slice(1,-2))
             asteroids.push(new_asteroid)
             new_asteroid.load()
         }

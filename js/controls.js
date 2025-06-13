@@ -105,18 +105,22 @@ export function initialize(camera,asteroids = [],select_detection={}){
             parent_menu.style.height = "30%"
         }
     }
-
+    const detect_data = {...select_detection,camera}
     sun_o.onclick = () => setSelectedCamera("sun",camera)
     moon_o.onclick = () => setSelectedCamera("moon",camera)
     earth_o.onclick = () => setSelectedCamera("earth",camera)
     freeview_o.onclick = () => setSelectedCamera("freeview",camera)
     asteroids_o.onclick = () => setSelectedAsteroids(camera,asteroids)
 
+    click_detection(detect_data,o_selected)
+}
+
+function click_detection(select_detection,objects){
     select_detection.renderer.domElement.addEventListener("click",(event)=>{
         select_detection.mouse.x = (event.clientX / select_detection.renderer.domElement.clientWidth) * 2 - 1
         select_detection.mouse.y = (event.clientY / select_detection.renderer.domElement.clientHeight) * 2 - 1
         
-        select_detection.raycaster.setFromCamera(select_detection.mouse,camera)
+        select_detection.raycaster.setFromCamera(select_detection.mouse,select_detection.camera)
     
         const intersects = select_detection.raycaster.intersectObjects(select_detection.scene.children)
         
@@ -126,12 +130,11 @@ export function initialize(camera,asteroids = [],select_detection={}){
                 clickedObject = clickedObject.parent
             console.log(clickedObject.name)
 
-            for (let key of Object.keys(o_selected))
+            for (let key of Object.keys(objects))
                 if(key == clickedObject.name){
-                    setSelectedCamera(key,camera)
+                    setSelectedCamera(key,select_detection.camera,true,false,objects)
                     break
                 }
         }
     })
-
 }
