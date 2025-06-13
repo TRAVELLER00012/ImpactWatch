@@ -53,7 +53,7 @@ export class Body{
                 font: font,
                 size: size,
                 depth: 0,
-                curveSegments: 12,
+                curveSegments: 0.5,
                 bevelEnabled: false,
             })
         
@@ -75,6 +75,17 @@ export class Body{
             this.scene.add(mesh)
             
         })
+    }
+
+    clearText(){
+        if(this.textMesh)
+            this.textMesh.removeFromParent()
+    }
+    static generateInfo(info){
+        let text = ""
+        for (let key of Object.keys(info))
+            text += `${key}: `+info[key]+"\n"
+        return text
     }
 }
 

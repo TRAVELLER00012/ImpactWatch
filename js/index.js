@@ -44,7 +44,6 @@ function animate(){
         earth.pivot.rotation.y += 0.0012
         const earth_pos = new THREE.Vector3()
         earth.model.getWorldPosition(earth_pos)
-        // earth.loadText(fontLoader,"hello world")
 
         if(moon.model){
             moon.pivot.position.set(earth_pos.x,earth_pos.y,earth_pos.z)
@@ -54,23 +53,53 @@ function animate(){
             
             const moon_pos = new THREE.Vector3()
             moon.model.getWorldPosition(moon_pos)
-            // moon.loadText(fontLoader,"Hello",{pos:new THREE.Vector3(moon_pos.x + 3, moon_pos.y + 3, moon_pos.z)})
             
-            if(o_selected.moon)
+            if(o_selected.moon){
                 camera.position.set(moon_pos.x,moon_pos.y ,moon_pos.z + 5)
+                moon.loadText(
+                    fontLoader,
+                    Body.generateInfo({
+                        "Name":"Moon",
+                        "Orbiting":"Earth",
+                        "Diameter":"3,474 Km"
+                    }),
+                    {pos:new THREE.Vector3(moon_pos.x + moon.scaleX + 5, moon_pos.y + moon.scaleY+3,moon_pos.z)},
+                    0.5
+                )
+            }else moon.clearText()
         }
-        if (o_selected.earth)
+        if (o_selected.earth){
             camera.position.set(earth_pos.x,earth_pos.y ,earth_pos.z + 20)
+            earth.loadText(
+                fontLoader,
+                Body.generateInfo({
+                    "Name":"Earth",
+                    "Type":"Terrestrial",
+                    "Diameter":"12,742 Km",
+                    "Moons":"1",
+                    "Orbital Periods":"365.25 Days"
+                }))
+        }else earth.clearText()
     }
 
     
     if (sun.model){
-        // sun.loadText(fontLoader,"Hello world",{model:sun.pivot})
         sun.pivot.rotation.y += 0.003
         const sunPos = new THREE.Vector3()
         sun.pivot.getWorldPosition(sunPos)
-        if (o_selected.sun)
+        if (o_selected.sun){
             camera.position.set(sunPos.x,sunPos.y ,sunPos.z + 80)
+            sun.loadText(
+                fontLoader,
+                Body.generateInfo({
+                    "Name":"Sun",
+                    "Type":"G",
+                    "Diameter":"1.39 million Km",
+                    "Surface T":"5,778K"
+                }),
+                {pos:new THREE.Vector3(sunPos.x + sun.scaleX + 5, sunPos.y + sun.scaleY+3,sunPos.z)})
+        }
+        else sun.clearText()
     }
     for (let i in asteroids){
         if(asteroids[i].model){
@@ -83,13 +112,28 @@ function animate(){
         setSelectedCamera(null)
 
     if(o_selected.asteroids){
-        for (let i in Object.keys(asteroids_stat)) 
+        for (let i in Object.keys(asteroids_stat)){
             if(Object.values(asteroids_stat)[i]){
                 const pos = new THREE.Vector3()
                 asteroids[i].model.getWorldPosition(pos)
-                camera.position.set(pos.x, pos.y,pos.z+3)
-            }
-    }
+                camera.position.set(pos.x, pos.y,pos.z+10)
+                asteroids[i].loadText(
+                    fontLoader,
+                    Body.generateInfo({
+                        "Name":Object.keys(asteroids_stat)[i], 
+                        "Id": asteroids_data[i].id, 
+                        "Velocity(Km/s)":asteroids_data[i].velocity * Asteroid.velocity_scale,
+                        "AVG Diameter(KM)":asteroids_data[i].diameter * 2 * Asteroid.scale_size,
+                        "Hazardous":asteroids_data[i].hazardous ? "YES" : "NO"
+                    }),
+                    {pos:new THREE.Vector3(pos.x + asteroids[i].scaleX + 5 , pos.y + asteroids[i].scaleY + 3 , pos.z)},
+                    100
+                )
+            }else asteroids[i].clearText()
+        }
+    }else
+        for (let asteroid of asteroids) 
+            asteroid.clearText()
 
     if (keys.w) camera.position.z -= 0.03
     if (keys.s) camera.position.z += 0.03
