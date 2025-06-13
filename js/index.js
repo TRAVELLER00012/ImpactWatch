@@ -6,7 +6,7 @@ import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat} from "
 
 
 const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000)
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,100000)
 camera.layers.enable(1)
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth,window.innerHeight)
@@ -42,35 +42,14 @@ for (let asteroid of asteroids_data){
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 
-renderer.domElement.addEventListener("click",(event)=>{
-    mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1
-    mouse.y = (event.clientY / renderer.domElement.clientHeight) * 2 - 1
-    
-    raycaster.setFromCamera(mouse,camera)
-
-    const intersects = raycaster.intersectObjects(scene.children)
-
-    if (intersects.length > 0){
-        let clickedObject = intersects[0].object
-        while(clickedObject.parent && clickedObject.parent.name)
-            clickedObject = clickedObject.parent
-
-
-        if(clickedObject.name == sun.model_name) console.log("CLICKED ON SUN")
-        if(clickedObject.name == earth.model_name) console.log("CLICKED ON EARTH")
-        if(clickedObject.name == moon.model_name) console.log("CLICKED ON MOON")
-    }
-})
-
-
-initialize(camera,asteroids_data)
+initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene})
 function animate(){
     if (earth.model){
         earth.model.rotation.y += 0.001745
         earth.pivot.rotation.y += 0.0012
         const earth_pos = new THREE.Vector3()
         earth.model.getWorldPosition(earth_pos)
-        earth.loadText(fontLoader,"hello world")
+        // earth.loadText(fontLoader,"hello world")
 
         if(moon.model){
             moon.pivot.position.set(earth_pos.x,earth_pos.y,earth_pos.z)
@@ -80,7 +59,7 @@ function animate(){
             
             const moon_pos = new THREE.Vector3()
             moon.model.getWorldPosition(moon_pos)
-            moon.loadText(fontLoader,"Hello",{pos:new THREE.Vector3(moon_pos.x + 3, moon_pos.y + 3, moon_pos.z)})
+            // moon.loadText(fontLoader,"Hello",{pos:new THREE.Vector3(moon_pos.x + 3, moon_pos.y + 3, moon_pos.z)})
             
             if(o_selected.moon)
                 camera.position.set(moon_pos.x,moon_pos.y ,moon_pos.z + 5)
@@ -91,7 +70,7 @@ function animate(){
 
     
     if (sun.model){
-        sun.loadText(fontLoader,"Hello world",{model:sun.pivot})
+        // sun.loadText(fontLoader,"Hello world",{model:sun.pivot})
         sun.pivot.rotation.y += 0.003
         const sunPos = new THREE.Vector3()
         sun.pivot.getWorldPosition(sunPos)

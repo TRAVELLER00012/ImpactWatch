@@ -64,7 +64,7 @@ function setSelectedAsteroids(camera,asteroids){
     }
 }
 
-export function initialize(camera,asteroids = []){
+export function initialize(camera,asteroids = [],select_detection={}){
     window.addEventListener("mousedown", (event) => {
         if (event.button === 0)
             isRightMouseDown = true
@@ -111,5 +111,27 @@ export function initialize(camera,asteroids = []){
     earth_o.onclick = () => setSelectedCamera("earth",camera)
     freeview_o.onclick = () => setSelectedCamera("freeview",camera)
     asteroids_o.onclick = () => setSelectedAsteroids(camera,asteroids)
+
+    select_detection.renderer.domElement.addEventListener("click",(event)=>{
+        select_detection.mouse.x = (event.clientX / select_detection.renderer.domElement.clientWidth) * 2 - 1
+        select_detection.mouse.y = (event.clientY / select_detection.renderer.domElement.clientHeight) * 2 - 1
+        
+        select_detection.raycaster.setFromCamera(select_detection.mouse,camera)
+    
+        const intersects = select_detection.raycaster.intersectObjects(select_detection.scene.children)
+        
+        if (intersects.length > 0){
+            let clickedObject = intersects[0].object
+            while(clickedObject.parent && clickedObject.parent.name)
+                clickedObject = clickedObject.parent
+            console.log(clickedObject.name)
+
+            for (let key of Object.keys(o_selected))
+                if(key == clickedObject.name){
+                    setSelectedCamera(key,camera)
+                    break
+                }
+        }
+    })
 
 }
