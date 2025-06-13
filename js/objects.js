@@ -132,7 +132,15 @@ export class Asteroids{
     get_asteroid_bodies(data){
         const asteroids = []
         for (let asteroid of data){
-            const new_asteroid = new Body(this.loader, "asteroid", [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  [125+asteroid.miss_distance,Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],this.scene,asteroid.name.slice(1,-2))
+            const new_asteroid = new Body(
+                this.loader,
+                 "asteroid", 
+                 [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  
+                 [125+asteroid.miss_distance,
+                    Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),
+                    Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],
+                    this.scene,asteroid.name.slice(1,-2)
+                )
             asteroids.push(new_asteroid)
             new_asteroid.load()
         }
