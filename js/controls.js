@@ -25,6 +25,11 @@ const moon_o = document.getElementById("moon")
 const freeview_o = document.getElementById("freeview")
 const asteroids_o = document.getElementById("asteroids")
 const select_object_label = document.getElementById("select_object_label")
+const decrease_speed_button = document.getElementById("decrease_speed")
+const increase_speed_button = document.getElementById("increase_speed")
+const speed_label = document.getElementById("speed")
+
+export let speed_scale = 1
 
 export function setSelectedCamera(key,camera,default_selected_val = true,default_other_val = false,object = o_selected){
         Object.keys(object).forEach(k => object[k] = default_other_val)
@@ -112,9 +117,16 @@ export function initialize(camera,asteroids = [],select_detection={}){
     freeview_o.onclick = () => setSelectedCamera("freeview",camera)
     asteroids_o.onclick = () => setSelectedAsteroids(camera,asteroids)
 
+    
+    decrease_speed_button.onclick = () =>{
+        if(speed_scale > 0) speed_scale-=0.5
+    }
+    increase_speed_button.onclick = () =>{
+        if(speed_scale <= 9.5) speed_scale+= 0.5
+    }
     click_detection(detect_data,o_selected)
 }
-
+export function update_speed_label(){speed_label.textContent = speed_scale}
 function click_detection(select_detection,objects){
     select_detection.renderer.domElement.addEventListener("click",(event)=>{
         select_detection.mouse.x = (event.clientX / select_detection.renderer.domElement.clientWidth) * 2 - 1

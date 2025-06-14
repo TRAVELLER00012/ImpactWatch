@@ -2,7 +2,7 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { FontLoader } from "three/addons/loaders/FontLoader.js"
 import { Body, Asteroids } from "./objects"
-import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat} from "./controls"
+import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale} from "./controls"
 
 
 const scene = new THREE.Scene()
@@ -33,24 +33,14 @@ Asteroid.velocity_scale = Math.floor(Math.random() * (1e5 - 1e4 + 1) + 1e4)
 const asteroids_data = await Asteroid.get_asteroid_data()
 const asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
 
-const decrease_speed_button = document.getElementById("decrease_speed")
-const increase_speed_button = document.getElementById("increase_speed")
-const speed_label = document.getElementById("speed")
-let speed_scale = 1
 
-decrease_speed_button.onclick = () =>{
-    if(speed_scale > 0) speed_scale-=0.5
-}
-increase_speed_button.onclick = () =>{
-    if(speed_scale <= 9.5) speed_scale+= 0.5
-}
 
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 
 initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene})
 function animate(){
-    speed_label.textContent = speed_scale.toString()
+    update_speed_label()
     if (earth.model){
         earth.model.rotation.y += 0.001745 * speed_scale
         earth.pivot.rotation.y += 0.0012 * speed_scale
