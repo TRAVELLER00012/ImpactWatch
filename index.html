@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="parent_menu">
+    <div class="floating parent_menu">
         <div class="heading" id="menu">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -22,6 +22,14 @@
             <li id="asteroids">Asteroids</li>
             <li id="freeview">Free View</li>
         </ul>
+    </div>
+    <div class="floating" id="controls">
+        <div id="speed_control">
+            <h4>Speed</h4>
+            <button id="decrease_speed">&larr;</button>
+            <p><span id="speed">1</span>x</p>
+            <button id="increase_speed">&rarr;</button>
+        </div>
     </div>
     <script src="js/index.js" type="module"></script>
 </body>

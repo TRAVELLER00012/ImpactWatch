@@ -33,23 +33,35 @@ Asteroid.velocity_scale = Math.floor(Math.random() * (1e5 - 1e4 + 1) + 1e4)
 const asteroids_data = await Asteroid.get_asteroid_data()
 const asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
 
+const decrease_speed_button = document.getElementById("decrease_speed")
+const increase_speed_button = document.getElementById("increase_speed")
+const speed_label = document.getElementById("speed")
+let speed_scale = 1
+
+decrease_speed_button.onclick = () =>{
+    if(speed_scale > 0) speed_scale-=0.5
+}
+increase_speed_button.onclick = () =>{
+    if(speed_scale <= 9.5) speed_scale+= 0.5
+}
 
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 
 initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene})
 function animate(){
+    speed_label.textContent = speed_scale.toString()
     if (earth.model){
-        earth.model.rotation.y += 0.001745
-        earth.pivot.rotation.y += 0.0012
+        earth.model.rotation.y += 0.001745 * speed_scale
+        earth.pivot.rotation.y += 0.0012 * speed_scale
         const earth_pos = new THREE.Vector3()
         earth.model.getWorldPosition(earth_pos)
 
         if(moon.model){
             moon.pivot.position.set(earth_pos.x,earth_pos.y,earth_pos.z)
             moon.model.position.z = -25
-            moon.model.rotation.y += 0.0005
-            moon.pivot.rotation.y += 0.0005
+            moon.model.rotation.y += 0.0005 * speed_scale
+            moon.pivot.rotation.y += 0.0005 * speed_scale
             
             const moon_pos = new THREE.Vector3()
             moon.model.getWorldPosition(moon_pos)
@@ -84,7 +96,7 @@ function animate(){
 
     
     if (sun.model){
-        sun.pivot.rotation.y += 0.003
+        sun.pivot.rotation.y += 0.003 * speed_scale
         const sunPos = new THREE.Vector3()
         sun.pivot.getWorldPosition(sunPos)
         if (o_selected.sun){
@@ -103,8 +115,8 @@ function animate(){
     }
     for (let i in asteroids){
         if(asteroids[i].model){
-            asteroids[i].model.rotation.y += 0.001745
-            asteroids[i].pivot.rotation.y += asteroids_data[i].velocity
+            asteroids[i].model.rotation.y += 0.001745 * speed_scale
+            asteroids[i].pivot.rotation.y += asteroids_data[i].velocity * speed_scale
         }
     }
 
