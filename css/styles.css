@@ -50,12 +50,15 @@ ul.menu li{
 ul.menu li:hover{
     opacity: 1;
 }
+#lower_controls, #left_controls, #right_controls{
+    bottom: 5%;
+}
 
 #lower_controls{
-    bottom: 5%;
     right: 50%;
     transform: translateX(50%);
 }
+
 
 #speed_control{
     display: grid;
@@ -87,7 +90,6 @@ ul.menu li:hover{
     display: flex;
     justify-content: right;
     width: 25%;
-    bottom: 5%;
     right: 5%;
 }
 #date_control, #date_control div{
@@ -129,4 +131,47 @@ ul.menu li:hover{
 #date_control div button:active{
     background-color: white;
     color: black;
+}
+
+#left_controls{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    left: 5%;
+    height: 100%;
+    width: 25%;
+}
+
+#left_controls #logs{   
+    overflow-y: scroll;
+    width: 70%;
+    height: 30%;
+    border: 2px solid white;
+    background-color: var(--bg-black);
+    border-radius: 7px;
+}
+#logs #header{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    background-color: white;
+    color: black;
+    font-weight: 500;
+}
+#logs #header span:nth-child(2){
+    cursor: pointer;
+    color: tomato;
+}
+#logs p{
+    padding: 5px 10px;
+    margin-top: 0;
+    color: tomato;
+    border-bottom: 2px solid rgba(255,255,255,0.25);
+}
+#logs p:first-child{
+    margin-top: 10px;
+}
+
+#logs p.blue{
+    color: dodgerblue;
 }
