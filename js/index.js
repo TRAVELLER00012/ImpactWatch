@@ -2,8 +2,7 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { FontLoader } from "three/addons/loaders/FontLoader.js"
 import { Body, Asteroids } from "./objects"
-import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale} from "./controls"
-
+import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date} from "./controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,100000)
@@ -29,18 +28,44 @@ moon.load()
 
 const Asteroid = new Asteroids(gltf_loader,scene)
 Asteroid.velocity_scale = Math.floor(Math.random() * (1e5 - 1e4 + 1) + 1e4)
+let old_start_date = Asteroid.start_date
+let old_end_date = Asteroid.end_date
+set_start_date(old_start_date)
+set_end_date(old_end_date)
 
-const asteroids_data = await Asteroid.get_asteroid_data()
-const asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
-
-
+let asteroids_data = null
+let asteroids = null
+async function initialize_asteroids(start_date_v=null,end_date_v=null){
+    if(start_date_v && end_date_v) asteroids_data = await Asteroid.get_asteroid_data(start_date_v,end_date_v)
+    else if(start_date_v) asteroids_data = await Asteroid.get_asteroid_data(start_date_v,old_end_date)
+    else if(end_date_v) asteroids_data = await Asteroid.get_asteroid_data(old_start_date,end_date_v)
+    else asteroids_data = await Asteroid.get_asteroid_data()
+    asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
+}
+await initialize_asteroids()
 
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 
+
+set_date_labels(old_start_date,old_end_date)
+
 initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene})
-function animate(){
+async function animate(){
     update_speed_label()
+    if(start_date != old_start_date && end_date != old_end_date){
+        await initialize_asteroids(start_date,end_date)
+        old_start_date = start_date
+        old_end_date = end_date
+    }
+    else if(start_date != old_start_date) {
+        await initialize_asteroids(start_date)
+        old_start_date = start_date
+    }
+    else if (end_date != old_end_date){
+        await initialize_asteroids(null,end_date)
+        old_end_date = end_date
+    }
     if (earth.model){
         earth.model.rotation.y += 0.001745 * speed_scale
         earth.pivot.rotation.y += 0.0012 * speed_scale

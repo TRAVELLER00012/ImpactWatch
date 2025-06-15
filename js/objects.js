@@ -98,17 +98,32 @@ export class Asteroids{
         this.scale_size = scale_size
         this.distance_scale = distance_scale
         this.velocity_scale = velocity_scale
-        this.start_date = `${start_date.getFullYear()}-${start_date.getMonth()}-${start_date.getDate()}`
-        if(end_date) this.end_date = `${end_date.getFullYear()}-${end_date.getMonth()}-${end_date.getDate()}`
-        else this.end_date = null
+
+        if(typeof start_date == "string"){
+            this.start_date = start_date
+        }else{
+            const start_month = start_date.getMonth() < 10 ? "0"+(start_date.getMonth()+1) : start_date.getMonth()+1
+            this.start_date = `${start_date.getFullYear()}-${start_month}-${start_date.getDate()}`
+        }
+        if(typeof end_date == "string"){
+            this.end_date = end_date
+        }else{
+            if(end_date) {
+                const end_month = end_date.getMonth() < 10 ? "0"+(end_date.getMonth()+1) : end_date.getMonth()+1
+                this.end_date = `${end_date.getFullYear()}-${end_month}-${end_date.getDate()}`
+            }    
+            else this.end_date = null
+        }
     }
-    async get_asteroid_data(){
+    async get_asteroid_data(start_date=this.start_date,end_date=this.end_date){
+        console.log(start_date,end_date)
         let result = {}
-        if (!this.end_date)
-            result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${this.start_date}&api_key=${api_key}`)
-        else
-            result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${this.start_date}&end_date=${this.end_date}&api_key=${api_key}`)
-        result = result.data.near_earth_objects
+        // console.log(start_date,end_date)
+        // if (!this.end_date)
+        //     result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${this.start_date}&api_key=${api_key}`)
+        // else
+        //     result = await axios.get(`https://awpi.nasa.gov/neo/rest/v1/feed?start_date=${this.start_date}&end_date=${this.end_date}&api_key=${api_key}`)
+        // result = result.data.near_earth_objectsw
         const keys = Object.keys(result)
         const converted_result = []
         for (let key of keys){

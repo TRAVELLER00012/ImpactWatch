@@ -28,7 +28,13 @@ const select_object_label = document.getElementById("select_object_label")
 const decrease_speed_button = document.getElementById("decrease_speed")
 const increase_speed_button = document.getElementById("increase_speed")
 const speed_label = document.getElementById("speed")
+const date_submit = document.getElementById("submit_date")
+const start_date_input = document.getElementById("start_date")
+const end_date_input = document.getElementById("end_date")
 
+
+export let start_date = null
+export let end_date = null
 export let speed_scale = 1
 
 export function setSelectedCamera(key,camera,default_selected_val = true,default_other_val = false,object = o_selected){
@@ -124,6 +130,11 @@ export function initialize(camera,asteroids = [],select_detection={}){
     increase_speed_button.onclick = () =>{
         if(speed_scale <= 9.5) speed_scale+= 0.5
     }
+
+    date_submit.onclick = () =>{
+        start_date = start_date_input.value
+        end_date = end_date_input.value
+    }
     click_detection(detect_data,o_selected)
 }
 export function update_speed_label(){speed_label.textContent = speed_scale}
@@ -149,4 +160,16 @@ function click_detection(select_detection,objects){
                 }
         }
     })
+}
+
+export function set_date_labels(start_date_val, end_date_val){
+    start_date_input.value = start_date_val
+    end_date_input.value = end_date_val
+}
+
+export function set_start_date(start_date_val){
+    start_date = start_date_val
+}
+export function set_end_date(end_date_val){
+    end_date = end_date_val
 }

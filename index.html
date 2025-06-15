@@ -23,12 +23,28 @@
             <li id="freeview">Free View</li>
         </ul>
     </div>
-    <div class="floating" id="controls">
+    <div class="floating" id="lower_controls">
         <div id="speed_control">
             <h4>Speed</h4>
             <button id="decrease_speed">&larr;</button>
             <p><span id="speed">1</span>x</p>
             <button id="increase_speed">&rarr;</button>
+        </div>
+    </div>
+
+    <div class="floating" id="right_controls">
+        <div id="date_control">
+            <div>
+                <label for="start_date">Start Date</label>
+                <input type="date" id="start_date">
+            </div>
+            <div>
+                <label for="end_date">End Date</label>
+                <input type="date" id="end_date">
+            </div>
+            <div>
+                <button id="submit_date">Show</button>
+            </div>
         </div>
     </div>
     <script src="js/index.js" type="module"></script>
