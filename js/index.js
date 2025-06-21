@@ -2,7 +2,7 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { FontLoader } from "three/addons/loaders/FontLoader.js"
 import { Body, Asteroids } from "./objects"
-import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date} from "./controls"
+import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date, add_log} from "./controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,100000)
@@ -48,6 +48,7 @@ const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 set_date_labels(old_start_date,old_end_date)
 initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene})
+add_log("Welcome to Impact Watch!")
 async function animate(){
     update_speed_label()
     if(start_date != old_start_date && end_date != old_end_date){

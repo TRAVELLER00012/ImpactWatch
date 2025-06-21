@@ -15,6 +15,14 @@ export const o_selected = {
     asteroids: false
 }
 export const asteroids_stat = {}
+export const side_menu_stats = {
+    is_open:false,
+    stats:true,
+    select:true,
+    date:true,
+    logs:true,
+    speed:true
+}
 
 const elements = document.getElementsByClassName("elements")
 const menu = document.getElementById("menu")
@@ -25,14 +33,23 @@ const moon_o = document.getElementById("moon")
 const freeview_o = document.getElementById("freeview")
 const asteroids_o = document.getElementById("asteroids")
 const select_object_label = document.getElementById("select_object_label")
+const speed_control = document.getElementById("speed_control")
 const decrease_speed_button = document.getElementById("decrease_speed")
 const increase_speed_button = document.getElementById("increase_speed")
 const speed_label = document.getElementById("speed")
 const date_submit = document.getElementById("submit_date")
 const start_date_input = document.getElementById("start_date")
 const end_date_input = document.getElementById("end_date")
+const date_control = document.getElementById("date_control")
 const logs = document.getElementById("logs")
-
+const open_panel_button = document.getElementById("open_panel")
+const close_panel_button = document.getElementById("close_panel")
+const side_menu = document.getElementById("side_menu")
+const option_stats = document.getElementById("option_stats")
+const option_date = document.getElementById("option_date")
+const option_select = document.getElementById("option_select")
+const option_speed = document.getElementById("option_speed")
+const option_logs = document.getElementById("option_logs")
 
 export let start_date = null
 export let end_date = null
@@ -40,7 +57,10 @@ export let speed_scale = 1
 
 export function setSelectedCamera(key,camera,default_selected_val = true,default_other_val = false,object = o_selected){
         Object.keys(object).forEach(k => object[k] = default_other_val)
-        if (key && object.hasOwnProperty(key)) object[key] = default_selected_val
+        if (key && object.hasOwnProperty(key)) {
+            object[key] = default_selected_val
+            add_log("Selected " + key)
+        }
         if(camera) camera.rotation.set(0,0,0)
 }
 function setSelectedAsteroids(camera,asteroids){
@@ -127,16 +147,56 @@ export function initialize(camera,asteroids = [],select_detection={}){
     
     decrease_speed_button.onclick = () =>{
         if(speed_scale > 0) speed_scale-=0.5
+        add_log("Speed was set to: " + speed_scale + "x")
     }
     increase_speed_button.onclick = () =>{
         if(speed_scale <= 9.5) speed_scale+= 0.5
+        add_log("Speed was set to: " + speed_scale + "x")
     }
 
     date_submit.onclick = () =>{
         start_date = start_date_input.value
         end_date = end_date_input.value
+        add_log("Collecting asteroids from date: " + start_date + " to date: "+end_date)
     }
     click_detection(detect_data,o_selected)
+
+    open_panel_button.onclick = () => {
+        open_panel_button.style.display = "none"
+        side_menu.style.display = "block"
+        side_menu_stats.is_open = true
+    }
+    
+    close_panel_button.onclick = () =>{
+        side_menu_stats.is_open = false
+        open_panel_button.style.display = "block"
+        side_menu.style.display = "none"
+    }
+    show_hide_menu(parent_menu,side_menu_stats.select)
+    show_hide_menu(logs,side_menu_stats.logs)
+    show_hide_menu(date_control,side_menu_stats.date)
+    show_hide_menu(speed_control,side_menu_stats.speed,"grid")  
+    option_select.onclick = () =>{
+        side_menu_stats.select = !side_menu_stats.select
+        show_hide_menu(parent_menu,side_menu_stats.select)
+    }
+    option_logs.onclick = () =>{
+        side_menu_stats.logs = !side_menu_stats.logs
+        show_hide_menu(logs,side_menu_stats.logs)
+    }
+    option_date.onclick = () =>{
+        side_menu_stats.date = !side_menu_stats.date
+        show_hide_menu(date_control,side_menu_stats.date)
+    }
+    option_speed.onclick = () =>{
+        side_menu_stats.speed = !side_menu_stats.speed
+        show_hide_menu(speed_control,side_menu_stats.speed,"grid")  
+    }
+}
+function show_hide_menu(menu,is_visible,display = "block"){
+    if(!is_visible) menu.style.display = "none"
+    else menu.style.display = display
+
 }
 export function update_speed_label(){speed_label.textContent = speed_scale}
 function click_detection(select_detection,objects){
@@ -175,6 +235,10 @@ export function set_end_date(end_date_val){
     end_date = end_date_val
 }
 
-export function add_log(text,red=false){
+export function add_log(text){
     const item = document.createElement("p")
+    item.textContent = text
+    item.classList.add("log")
+    logs.appendChild(item)
+    logs.scrollTo(0,logs.scrollHeight)
 }
