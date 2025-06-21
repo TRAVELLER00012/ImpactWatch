@@ -46,10 +46,7 @@ await initialize_asteroids()
 
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
-
-
 set_date_labels(old_start_date,old_end_date)
-
 initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene})
 async function animate(){
     update_speed_label()

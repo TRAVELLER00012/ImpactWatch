@@ -31,6 +31,7 @@ const speed_label = document.getElementById("speed")
 const date_submit = document.getElementById("submit_date")
 const start_date_input = document.getElementById("start_date")
 const end_date_input = document.getElementById("end_date")
+const logs = document.getElementById("logs")
 
 
 export let start_date = null
@@ -172,4 +173,8 @@ export function set_start_date(start_date_val){
 }
 export function set_end_date(end_date_val){
     end_date = end_date_val
+}
+
+export function add_log(text,red=false){
+    const item = document.createElement("p")
 }
