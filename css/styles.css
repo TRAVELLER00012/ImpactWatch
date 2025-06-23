@@ -172,6 +172,7 @@ ul.menu li:hover{
 }
 
 .side_panel{
+    z-index: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -204,8 +205,14 @@ ul.menu li:hover{
 }
 
 #side_menu ul li{
-    padding-bottom: 15px;
+    margin: auto;
+    padding-bottom: 30px;
     cursor: pointer;
+    width: fit-content;
+    width: 45%;
+}
+#side_menu ul li:last-child{
+    padding-bottom: 0;
 }
 #side_menu #header svg{
     fill: white;
@@ -213,4 +220,15 @@ ul.menu li:hover{
     width: 33%;
     height: fit-content;
     cursor: pointer;
+    margin: 0;
+}
+#side_menu #header p{
+    margin: 0;
+}
+#side_menu #header{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

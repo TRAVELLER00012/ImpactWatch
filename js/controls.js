@@ -44,6 +44,8 @@ const date_control = document.getElementById("date_control")
 const logs = document.getElementById("logs")
 const open_panel_button = document.getElementById("open_panel")
 const close_panel_button = document.getElementById("close_panel")
+
+
 const side_menu = document.getElementById("side_menu")
 const option_stats = document.getElementById("option_stats")
 const option_date = document.getElementById("option_date")
@@ -176,6 +178,15 @@ export function initialize(camera,asteroids = [],select_detection={}){
     show_hide_menu(logs,side_menu_stats.logs)
     show_hide_menu(date_control,side_menu_stats.date)
     show_hide_menu(speed_control,side_menu_stats.speed,"grid")  
+    option_stats.onclick = () =>{
+        const statsFPS = document.getElementById("statsFPS")
+        const statsMB = document.getElementById("statsMB")
+        const statsMS = document.getElementById("statsMS")
+        side_menu_stats.stats = !side_menu_stats.stats
+        show_hide_menu(statsFPS,side_menu_stats.stats)
+        show_hide_menu(statsMB,side_menu_stats.stats)
+        show_hide_menu(statsMS,side_menu_stats.stats)
+    }
     option_select.onclick = () =>{
         side_menu_stats.select = !side_menu_stats.select
         show_hide_menu(parent_menu,side_menu_stats.select)
@@ -196,7 +207,6 @@ export function initialize(camera,asteroids = [],select_detection={}){
 function show_hide_menu(menu,is_visible,display = "block"){
     if(!is_visible) menu.style.display = "none"
     else menu.style.display = display
-
 }
 export function update_speed_label(){speed_label.textContent = speed_scale}
 function click_detection(select_detection,objects){
