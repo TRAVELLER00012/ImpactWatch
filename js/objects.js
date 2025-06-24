@@ -116,14 +116,15 @@ export class Asteroids{
         }
     }
     async get_asteroid_data(start_date=this.start_date,end_date=this.end_date){
-        console.log(start_date,end_date)
+        // console.log(start_date,end_date)
         let result = {}
         // console.log(start_date,end_date)
-        // if (!this.end_date)
-        //     result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${this.start_date}&api_key=${api_key}`)
-        // else
-        //     result = await axios.get(`https://awpi.nasa.gov/neo/rest/v1/feed?start_date=${this.start_date}&end_date=${this.end_date}&api_key=${api_key}`)
-        // result = result.data.near_earth_objectsw
+        if (!this.end_date)
+            result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&api_key=${api_key}`)
+        else
+            result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&end_date=${end_date}&api_key=${api_key}`)
+        result = result.data.near_earth_objects
+        console.log(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&end_date=${end_date}&api_key=${api_key}`)
         const keys = Object.keys(result)
         const converted_result = []
         for (let key of keys){

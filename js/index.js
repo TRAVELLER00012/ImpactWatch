@@ -2,11 +2,10 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { FontLoader } from "three/addons/loaders/FontLoader.js"
 import { Body, Asteroids } from "./objects"
-import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date, add_log} from "./controls"
+import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date, add_log, asteroids_o, setSelectedAsteroids} from "./controls"
 import Stats from "stats.js"
 // TODO: Add cookies
-// TODO: test dating system of asteroids
-// TODO: final testing before 
+// TODO: final testing 
 
 const statsFPS = new Stats();
 statsFPS.showPanel(0);
@@ -62,18 +61,51 @@ set_end_date(old_end_date)
 let asteroids_data = null
 let asteroids = null
 async function initialize_asteroids(start_date_v=null,end_date_v=null){
+    if (asteroids) {
+        for (let body of asteroids) {
+            if (!body || !body.pivot) continue
+            scene.remove(body.pivot)
+            body.pivot.traverse((child) => {
+                if (child.isMesh) {
+                    child.geometry.dispose()
+                    if (Array.isArray(child.material)) child.material.forEach((mat) => mat.dispose())
+                    else child.material.dispose()
+                }
+            })
+            body.model = null
+            body.pivot = null
+        }
+        asteroids = null
+    }
+
     if(start_date_v && end_date_v) asteroids_data = await Asteroid.get_asteroid_data(start_date_v,end_date_v)
     else if(start_date_v) asteroids_data = await Asteroid.get_asteroid_data(start_date_v,old_end_date)
     else if(end_date_v) asteroids_data = await Asteroid.get_asteroid_data(old_start_date,end_date_v)
     else asteroids_data = await Asteroid.get_asteroid_data()
     asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
+    Object.keys(asteroids_stat).forEach(key => delete asteroids_stat[key])
+    console.log(asteroids)
+    asteroids_o.onclick = () => setSelectedAsteroids(camera,asteroids_data)
 }
 await initialize_asteroids()
 
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 set_date_labels(old_start_date,old_end_date)
-initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene})
+initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene},async () =>{
+    console.log("OLD:",old_start_date," NEW:",start_date)
+    if(old_start_date != start_date && old_end_date != end_date){
+        await initialize_asteroids(start_date,end_date)
+        old_start_date = start_date
+        old_end_date = end_date
+    }else if(old_start_date  != start_date){
+        await initialize_asteroids(start_date)
+        old_start_date = start_date
+    }else if(old_end_date  != end_date){
+        await initialize_asteroids(null,end_date)
+        old_end_date = end_date
+    }
+})
 add_log("Welcome to Impact Watch!")
 
 
@@ -83,19 +115,6 @@ async function animate(){
     statsMS.begin();
 
     update_speed_label()
-    if(start_date != old_start_date && end_date != old_end_date){
-        await initialize_asteroids(start_date,end_date)
-        old_start_date = start_date
-        old_end_date = end_date
-    }
-    else if(start_date != old_start_date) {
-        await initialize_asteroids(start_date)
-        old_start_date = start_date
-    }
-    else if (end_date != old_end_date){
-        await initialize_asteroids(null,end_date)
-        old_end_date = end_date
-    }
     if (earth.model){
         earth.model.rotation.y += 0.001745 * speed_scale
         earth.pivot.rotation.y += 0.0012 * speed_scale
@@ -189,8 +208,9 @@ async function animate(){
             }else asteroids[i].clearText()
         }
     }else
-        for (let asteroid of asteroids) 
-            asteroid.clearText()
+        if(asteroids)
+            for (let asteroid of asteroids) 
+                asteroid.clearText()
 
     if (keys.w) camera.position.z -= 0.03
     if (keys.s) camera.position.z += 0.03

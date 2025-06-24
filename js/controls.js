@@ -14,7 +14,7 @@ export const o_selected = {
     freeview:false,
     asteroids: false
 }
-export const asteroids_stat = {}
+export let asteroids_stat = {}
 export const side_menu_stats = {
     is_open:false,
     stats:true,
@@ -31,7 +31,7 @@ const sun_o = document.getElementById("sun")
 const earth_o = document.getElementById("earth")
 const moon_o = document.getElementById("moon")
 const freeview_o = document.getElementById("freeview")
-const asteroids_o = document.getElementById("asteroids")
+export const asteroids_o = document.getElementById("asteroids")
 const select_object_label = document.getElementById("select_object_label")
 const speed_control = document.getElementById("speed_control")
 const decrease_speed_button = document.getElementById("decrease_speed")
@@ -65,7 +65,7 @@ export function setSelectedCamera(key,camera,default_selected_val = true,default
         }
         if(camera) camera.rotation.set(0,0,0)
 }
-function setSelectedAsteroids(camera,asteroids){
+export function setSelectedAsteroids(camera,asteroids){
     setSelectedCamera("asteroids",null,!o_selected.asteroids)
     if (o_selected.asteroids){
         for (let asteroid of asteroids){
@@ -98,7 +98,7 @@ function setSelectedAsteroids(camera,asteroids){
     }
 }
 
-export function initialize(camera,asteroids = [],select_detection={}){
+export function initialize(camera,asteroids = [],select_detection={},date_submit_callback = () =>{}){
     window.addEventListener("mousedown", (event) => {
         if (event.button === 0)
             isRightMouseDown = true
@@ -156,10 +156,11 @@ export function initialize(camera,asteroids = [],select_detection={}){
         add_log("Speed was set to: " + speed_scale + "x")
     }
 
-    date_submit.onclick = () =>{
+    date_submit.onclick = async () =>{
         start_date = start_date_input.value
         end_date = end_date_input.value
         add_log("Collecting asteroids from date: " + start_date + " to date: "+end_date)
+        date_submit_callback()
     }
     click_detection(detect_data,o_selected)
 
