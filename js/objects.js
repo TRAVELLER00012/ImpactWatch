@@ -92,7 +92,7 @@ export class Body{
 const api_key = import.meta.env.VITE_API_KEY
 
 export class Asteroids{
-    constructor(loader,scene,start_date = new Date(),end_date = new Date(), scale_size = 0.225, distance_scale = 1.2e6, velocity_scale = 1e4){
+    constructor(loader,scene,start_date = new Date(),end_date = new Date(), scale_size = 0.5, distance_scale = 1.2e6, velocity_scale = 1e4){
         this.loader = loader
         this.scene = scene
         this.scale_size = scale_size

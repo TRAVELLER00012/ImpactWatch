@@ -192,7 +192,7 @@ async function animate(){
             if(Object.values(asteroids_stat)[i]){
                 const pos = new THREE.Vector3()
                 asteroids[i].model.getWorldPosition(pos)
-                camera.position.set(pos.x, pos.y,pos.z+3)
+                camera.position.set(pos.x, pos.y,pos.z+8)
                 asteroids[i].loadText(
                     fontLoader,
                     Body.generateInfo({
