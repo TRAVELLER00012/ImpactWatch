@@ -1,5 +1,7 @@
 :root{
     --bg-black: rgb(22,23,22);
+    --danger-red:tomato;
+    --soft-blue: dodgerblue;
 }
 body{
     /* cursor: none; */
@@ -231,4 +233,37 @@ ul.menu li:hover{
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+#error_screen{
+    display: none;
+    right: 50%;
+    top: 50%;
+    transform: translateX(50%) translateY(-50%);
+    background-color: var(--bg-black);
+    padding: 30px 50px;
+    border-radius: 20px;
+    border: 3px solid tomato;
+    text-align: center;
+}
+#error_screen h1{
+    font-weight: 500;
+}
+#error_screen p:nth-of-type(2),#error_screen p:nth-of-type(3){
+    text-align: left;
+}
+#error_screen .blue{
+    color: var(--soft-blue);
+}
+#error_screen .red{
+    color: var(--danger-red);
+}
+#error_screen button{
+    margin-top: 15px;
+    outline: 0;
+    border: 0;
+    font-weight: bold;
+    padding: 15px 20px;
+    font-size: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
 }

@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 import axios from "axios"
+import { show_error_screen } from "./controls"
 
 export class Body{
     constructor(loader,model_name,scale,position,scene,detection_name = null){
@@ -44,7 +45,7 @@ export class Body{
             this.scene.add(this.pivot)
             
         }, undefined, function (err) {
-            console.log(err);
+            show_error_screen()
         });
     }
     loadText(fontLoader,text,pos_stat = {model: this.model},size=2,Material=THREE.MeshStandardMaterial){
@@ -123,8 +124,8 @@ export class Asteroids{
             else
                 result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&end_date=${end_date}&api_key=${api_key}`)
             result = result.data.near_earth_objects
-        }catch(err){
-            console.log(err)
+        }catch{
+            show_error_screen()
             result = {}
         }
         const keys = Object.keys(result)
@@ -141,8 +142,8 @@ export class Asteroids{
                         "miss_distance":parseFloat(o.close_approach_data[0].miss_distance.kilometers)/this.distance_scale,
                         "velocity": parseFloat(o.close_approach_data[0].relative_velocity.kilometers_per_second)/this.velocity_scale
                     })
-                }catch(err) {
-                    console.log(err)
+                }catch{
+                    show_error_screen()
                 }
             }
         }

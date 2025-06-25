@@ -1,4 +1,3 @@
-let isRightMouseDown = false;
 export const keys = {
     "w":false,
     "s":false,
@@ -44,22 +43,23 @@ const date_control = document.getElementById("date_control")
 const logs = document.getElementById("logs")
 const open_panel_button = document.getElementById("open_panel")
 const close_panel_button = document.getElementById("close_panel")
-
-
 const side_menu = document.getElementById("side_menu")
 const option_stats = document.getElementById("option_stats")
 const option_date = document.getElementById("option_date")
 const option_select = document.getElementById("option_select")
 const option_speed = document.getElementById("option_speed")
 const option_logs = document.getElementById("option_logs")
+const error_screen = document.getElementById("error_screen")
+const error_button = document.getElementById("retry_button")
 
+let isRightMouseDown = false
 export let start_date = null
 export let end_date = null
 export let speed_scale = 1
 
 export function setSelectedCamera(key,camera,default_selected_val = true,default_other_val = false,object = o_selected){
-        Object.keys(object).forEach(k => object[k] = default_other_val)
-        if (key && object.hasOwnProperty(key)) {
+    Object.keys(object).forEach(k => object[k] = default_other_val)
+    if (key && object.hasOwnProperty(key)) {
             object[key] = default_selected_val
             add_log("Selected " + key)
         }
@@ -97,8 +97,8 @@ export function setSelectedAsteroids(camera,asteroids){
             const asteroids = document.getElementsByClassName("asteroid")
             for (let asteroid of asteroids) asteroid.style.display = "none"
         }
-    }catch(err){
-        console.log(err)
+    }catch{
+        show_error_screen()
     }
 }
 
@@ -106,16 +106,16 @@ export function initialize(camera,asteroids = [],select_detection={},date_submit
     window.addEventListener("mousedown", (event) => {
         if (event.button === 0)
             isRightMouseDown = true
-    });
+    })
 
     window.addEventListener("mouseup", (event) => {
         if (event.button === 0)
             isRightMouseDown = false
-    });
+    })
 
     window.addEventListener("mouseleave", () => {
         isRightMouseDown = false
-    });
+    })
 
     window.addEventListener("mousemove", (event) => {
         if (!isRightMouseDown) return
@@ -208,6 +208,8 @@ export function initialize(camera,asteroids = [],select_detection={},date_submit
         side_menu_stats.speed = !side_menu_stats.speed
         show_hide_menu(speed_control,side_menu_stats.speed,"grid")  
     }
+
+    error_button.onclick = () => location.reload()
 }
 function show_hide_menu(menu,is_visible,display = "block"){
     if(!is_visible) menu.style.display = "none"
@@ -255,4 +257,7 @@ export function add_log(text){
     item.classList.add("log")
     logs.appendChild(item)
     logs.scrollTo(0,logs.scrollHeight)
+}
+export function show_error_screen(){
+    error_screen.style.display = "block"
 }

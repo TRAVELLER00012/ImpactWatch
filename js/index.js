@@ -2,7 +2,7 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { FontLoader } from "three/addons/loaders/FontLoader.js"
 import { Body, Asteroids } from "./objects"
-import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date, add_log, asteroids_o, setSelectedAsteroids} from "./controls"
+import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date, add_log, asteroids_o, setSelectedAsteroids, show_error_screen} from "./controls"
 import Stats from "stats.js"
 // TODO: Add cookies
 // TODO: final testing 
@@ -86,14 +86,14 @@ async function initialize_asteroids(start_date_v=null,end_date_v=null){
         asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
         Object.keys(asteroids_stat).forEach(key => delete asteroids_stat[key])
         asteroids_o.onclick = () => setSelectedAsteroids(camera,asteroids_data)
-    }catch(err){
-        console.log(err)
+    }catch{
+        show_error_screen()
     }
 }
 try{
     await initialize_asteroids()
-}catch(err){
-    console.log(err)
+}catch{
+    show_error_screen()
 }
 
 const raycaster = new THREE.Raycaster()
@@ -112,8 +112,8 @@ initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene},async () =>{
             await initialize_asteroids(null,end_date)
             old_end_date = end_date
         }
-    }catch(err){
-        console.log(err)
+    }catch{
+        show_error_screen()
     }
 })
 add_log("Welcome to Impact Watch!")

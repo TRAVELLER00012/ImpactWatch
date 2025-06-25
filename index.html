@@ -107,6 +107,15 @@
             </ul>
         </div>
     </div>
+
+    <div id="error_screen" class="floating">
+        <h1>[ <span class="blue">SYSTEM</span> INTERRUPT <span class="red">0x01</span> ]</h1>
+        <p>>> DATA <span class="blue">FETCH</span> FAILED</p>
+        <p><span class="red">REASON:</span> UNREACHABLE RESOURCE <span class="blue">OR</span> CORRUPTED <span class="blue">INPUT</span></p>
+        <p><span class="red">ACTION:</span> RETRY OPERATION <span class="blue">OR CHECK CONNECTION</span></p>
+        <p>== <span class="blue">SYSTEM</span> STANDING <span class="blue">BY</span> ==</p>
+        <button id="retry_button">Retry</button>
+    </div>
     <script src="js/index.js" type="module"></script>
 </body>
 </html>
