@@ -296,3 +296,32 @@ ul.menu li:hover{
 #error_screen button:hover {
     background-color: #81d4fa;
 }
+
+#loading_screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    color: lime;
+    font-family: monospace;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#loading_screen span.blue {
+    color: cyan;
+}
+
+#loading_screen span.yellow {
+    color: yellow;
+}
+
+#loading_screen p {
+    margin: 5px 0;
+}

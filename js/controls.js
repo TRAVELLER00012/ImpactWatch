@@ -101,8 +101,18 @@ export function setSelectedAsteroids(camera,asteroids){
         show_error_screen()
     }
 }
-
+let initialLoadingHandled = false
+window.addEventListener("load", () => {
+    if(!initialLoadingHandled){
+        const screen = document.getElementById("loading_screen")
+        if (screen) screen.style.display = "none"
+        initialLoadingHandled = true
+    }
+})
 export function initialize(camera,asteroids = [],select_detection={},date_submit_callback = () =>{}){
+    
+
+
     window.addEventListener("mousedown", (event) => {
         if (event.button === 0)
             isRightMouseDown = true
@@ -210,6 +220,7 @@ export function initialize(camera,asteroids = [],select_detection={},date_submit
     }
 
     error_button.onclick = () => location.reload()
+
 }
 function show_hide_menu(menu,is_visible,display = "block"){
     if(!is_visible) menu.style.display = "none"
@@ -260,4 +271,13 @@ export function add_log(text){
 }
 export function show_error_screen(){
     error_screen.style.display = "flex"
+}
+
+export function show_loading_screen(){
+    const screen = document.getElementById("loading_screen")
+    screen.style.display = "flex"
+}
+export function hide_loading_screen(){
+    const screen = document.getElementById("loading_screen")
+    screen.style.display = "none"
 }

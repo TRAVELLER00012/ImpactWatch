@@ -23,8 +23,9 @@ export class Body{
         this.model = null
         this.textMesh = null
     }
-    load(){
-        this.loader.load(`./assets/models/${this.model_name}.glb`, (gltf) => {
+    async load(){
+        try{
+            const gltf = await this.loader.loadAsync(`./assets/models/${this.model_name}.glb`)
             gltf.scene.scale.set(this.scaleX,this.scaleY,this.scaleZ)
             const box = new THREE.Box3().setFromObject(gltf.scene)
             const center = new THREE.Vector3()
@@ -43,21 +44,21 @@ export class Body{
             this.model = gltf.scene
             this.model.name = this.detection_name
             this.scene.add(this.pivot)
-            
-        }, undefined, function (err) {
+        }catch{
             show_error_screen()
-        });
+        }
     }
-    loadText(fontLoader,text,pos_stat = {model: this.model},size=2,Material=THREE.MeshStandardMaterial){
-        fontLoader.load("./assets/fonts/helvetiker_regular.typeface.json",(font) => {
+    async loadText(fontLoader,text,pos_stat = {model: this.model},size=2,Material=THREE.MeshStandardMaterial){
+        try{
+            const font = await fontLoader.loadAsync("./assets/fonts/helvetiker_regular.typeface.json")
             const geo = new TextGeometry(text,{
-                font: font,
-                size: size,
-                depth: 0,
-                curveSegments: 0.5,
-                bevelEnabled: false,
-            })
-        
+                    font: font,
+                    size: size,
+                    depth: 0,
+                    curveSegments: 0.5,
+                    bevelEnabled: false,
+                })
+            
             const material = new Material({color:0xffffff})
             const mesh = new THREE.Mesh(geo,material)
             geo.center()
@@ -74,8 +75,9 @@ export class Body{
                 mesh.position.set(pos_stat.pos.x,pos_stat.pos.y,pos_stat.pos.z)
             }
             this.scene.add(mesh)
-            
-        })
+        }catch(err){
+            show_error_screen()
+        }
     }
 
     clearText(){
@@ -150,21 +152,25 @@ export class Asteroids{
         return converted_result
     }
 
-    get_asteroid_bodies(data){
-        const asteroids = []
-        for (let asteroid of data){
-            const new_asteroid = new Body(
-                this.loader,
-                 "asteroid", 
-                 [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  
-                 [125+asteroid.miss_distance,
-                    Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),
-                    Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],
-                    this.scene,asteroid.name.slice(1,-2)
-                )
-            asteroids.push(new_asteroid)
-            new_asteroid.load()
+    async get_asteroid_bodies(data){
+        try{
+            const asteroids = []
+            for (let asteroid of data){
+                const new_asteroid = new Body(
+                    this.loader,
+                    "asteroid", 
+                    [asteroid.diameter/2,asteroid.diameter/2,asteroid.diameter/2],  
+                    [125+asteroid.miss_distance,
+                        Math.floor(Math.random() * (50 - (-50) + 1) + (-50)),
+                        Math.floor(Math.random() * (100 - (-100) + 1) + (-100))],
+                        this.scene,asteroid.name.slice(1,-2)
+                    )
+                asteroids.push(new_asteroid)
+                await new_asteroid.load()
+            }
+            return asteroids
+        }catch{
+            show_error_screen()
         }
-        return asteroids
     }
 }
