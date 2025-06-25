@@ -119,26 +119,31 @@ export class Asteroids{
         let result = {}
         try{
             if (!this.end_date)
-            result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&api_key=${api_key}`)
-        else
-            result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&end_date=${end_date}&api_key=${api_key}`)
+                result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&api_key=${api_key}`)
+            else
+                result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&end_date=${end_date}&api_key=${api_key}`)
+            result = result.data.near_earth_objects
         }catch(err){
             console.log(err)
+            result = {}
         }
-        result = result.data.near_earth_objects
         const keys = Object.keys(result)
         const converted_result = []
         for (let key of keys){
             const obj = result[key]
             for (let o of obj ){
-                converted_result.push({
-                    "id":o.id,
-                    "name":o.name,
-                    "diameter":(o.estimated_diameter.kilometers.estimated_diameter_max + o.estimated_diameter.kilometers.estimated_diameter_min) / (2*this.scale_size),
-                    "hazardous": o.is_potentially_hazardous_asteroid,
-                    "miss_distance":parseFloat(o.close_approach_data[0].miss_distance.kilometers)/this.distance_scale,
-                    "velocity": parseFloat(o.close_approach_data[0].relative_velocity.kilometers_per_second)/this.velocity_scale
-                })
+                try{
+                    converted_result.push({
+                        "id":o.id,
+                        "name":o.name,
+                        "diameter":(o.estimated_diameter.kilometers.estimated_diameter_max + o.estimated_diameter.kilometers.estimated_diameter_min) / (2*this.scale_size),
+                        "hazardous": o.is_potentially_hazardous_asteroid,
+                        "miss_distance":parseFloat(o.close_approach_data[0].miss_distance.kilometers)/this.distance_scale,
+                        "velocity": parseFloat(o.close_approach_data[0].relative_velocity.kilometers_per_second)/this.velocity_scale
+                    })
+                }catch(err) {
+                    console.log(err)
+                }
             }
         }
         return converted_result

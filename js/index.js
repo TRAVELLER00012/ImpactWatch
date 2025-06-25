@@ -41,6 +41,7 @@ scene.add(light)
 const gltf_loader = new GLTFLoader()
 const fontLoader = new FontLoader()
 
+
 const sun = new Body(gltf_loader,"sun",[30,30,30],null,scene)
 sun.load()
 

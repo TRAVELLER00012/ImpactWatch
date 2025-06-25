@@ -66,35 +66,39 @@ export function setSelectedCamera(key,camera,default_selected_val = true,default
         if(camera) camera.rotation.set(0,0,0)
 }
 export function setSelectedAsteroids(camera,asteroids){
-    setSelectedCamera("asteroids",null,!o_selected.asteroids)
-    if (o_selected.asteroids){
-        for (let asteroid of asteroids){
-            const item = document.createElement("li")
-            item.textContent = asteroid.name.slice(1,-2)
-            item.classList.add("asteroid")
-            elements[0].appendChild(item)
-            asteroids_stat[asteroid.name.slice(1,-2)] = false
-        }
-        const labels = document.getElementsByClassName("asteroid")
-        for (let label of labels)
-            label.onclick = () => setSelectedCamera(label.textContent,camera,true,false,asteroids_stat)
-    
+    try{
+        setSelectedCamera("asteroids",null,!o_selected.asteroids)
+        if (o_selected.asteroids){
+            for (let asteroid of asteroids){
+                const item = document.createElement("li")
+                item.textContent = asteroid.name.slice(1,-2)
+                item.classList.add("asteroid")
+                elements[0].appendChild(item)
+                asteroids_stat[asteroid.name.slice(1,-2)] = false
+            }
+            const labels = document.getElementsByClassName("asteroid")
+            for (let label of labels)
+                label.onclick = () => setSelectedCamera(label.textContent,camera,true,false,asteroids_stat)
+        
 
-        sun_o.style.display = "none"
-        earth_o.style.display = "none"
-        moon_o.style.display = "none"
-        freeview_o.style.display = "none"
-        asteroids_o.textContent = "(Click Again to disable)"
-        select_object_label.textContent = "Asteroids"
-    }else{
-        sun_o.style.display = "block"
-        earth_o.style.display = "block"
-        moon_o.style.display = "block"
-        freeview_o.style.display = "block"
-        asteroids_o.textContent = "Asteroids"
-        select_object_label.textContent = "Select An Object"
-        const asteroids = document.getElementsByClassName("asteroid")
-        for (let asteroid of asteroids) asteroid.style.display = "none"
+            sun_o.style.display = "none"
+            earth_o.style.display = "none"
+            moon_o.style.display = "none"
+            freeview_o.style.display = "none"
+            asteroids_o.textContent = "(Click Again to disable)"
+            select_object_label.textContent = "Asteroids"
+        }else{
+            sun_o.style.display = "block"
+            earth_o.style.display = "block"
+            moon_o.style.display = "block"
+            freeview_o.style.display = "block"
+            asteroids_o.textContent = "Asteroids"
+            select_object_label.textContent = "Select An Object"
+            const asteroids = document.getElementsByClassName("asteroid")
+            for (let asteroid of asteroids) asteroid.style.display = "none"
+        }
+    }catch(err){
+        console.log(err)
     }
 }
 
