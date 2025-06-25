@@ -259,5 +259,5 @@ export function add_log(text){
     logs.scrollTo(0,logs.scrollHeight)
 }
 export function show_error_screen(){
-    error_screen.style.display = "block"
+    error_screen.style.display = "flex"
 }
