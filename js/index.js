@@ -27,7 +27,6 @@ document.body.appendChild(statsFPS.dom);
 statsFPS.dom.id = "statsFPS"
 statsMS.dom.id = "statsMS"
 statsMB.dom.id = "statsMB"
-console.log(document.getElementById("statsFPS"));
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,100000)
@@ -78,32 +77,42 @@ async function initialize_asteroids(start_date_v=null,end_date_v=null){
         asteroids = null
     }
 
-    if(start_date_v && end_date_v) asteroids_data = await Asteroid.get_asteroid_data(start_date_v,end_date_v)
-    else if(start_date_v) asteroids_data = await Asteroid.get_asteroid_data(start_date_v,old_end_date)
-    else if(end_date_v) asteroids_data = await Asteroid.get_asteroid_data(old_start_date,end_date_v)
-    else asteroids_data = await Asteroid.get_asteroid_data()
-    asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
-    Object.keys(asteroids_stat).forEach(key => delete asteroids_stat[key])
-    console.log(asteroids)
-    asteroids_o.onclick = () => setSelectedAsteroids(camera,asteroids_data)
+    try{
+        if(start_date_v && end_date_v) asteroids_data = await Asteroid.get_asteroid_data(start_date_v,end_date_v)
+        else if(start_date_v) asteroids_data = await Asteroid.get_asteroid_data(start_date_v,old_end_date)
+        else if(end_date_v) asteroids_data = await Asteroid.get_asteroid_data(old_start_date,end_date_v)
+        else asteroids_data = await Asteroid.get_asteroid_data()
+        asteroids = Asteroid.get_asteroid_bodies(asteroids_data)
+        Object.keys(asteroids_stat).forEach(key => delete asteroids_stat[key])
+        asteroids_o.onclick = () => setSelectedAsteroids(camera,asteroids_data)
+    }catch(err){
+        console.log(err)
+    }
 }
-await initialize_asteroids()
+try{
+    await initialize_asteroids()
+}catch(err){
+    console.log(err)
+}
 
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 set_date_labels(old_start_date,old_end_date)
 initialize(camera,asteroids_data,{renderer,raycaster,mouse,scene},async () =>{
-    console.log("OLD:",old_start_date," NEW:",start_date)
-    if(old_start_date != start_date && old_end_date != end_date){
-        await initialize_asteroids(start_date,end_date)
-        old_start_date = start_date
-        old_end_date = end_date
-    }else if(old_start_date  != start_date){
-        await initialize_asteroids(start_date)
-        old_start_date = start_date
-    }else if(old_end_date  != end_date){
-        await initialize_asteroids(null,end_date)
-        old_end_date = end_date
+    try{
+        if(old_start_date != start_date && old_end_date != end_date){
+            await initialize_asteroids(start_date,end_date)
+            old_start_date = start_date
+            old_end_date = end_date
+        }else if(old_start_date  != start_date){
+            await initialize_asteroids(start_date)
+            old_start_date = start_date
+        }else if(old_end_date  != end_date){
+            await initialize_asteroids(null,end_date)
+            old_end_date = end_date
+        }
+    }catch(err){
+        console.log(err)
     }
 })
 add_log("Welcome to Impact Watch!")
@@ -115,13 +124,13 @@ async function animate(){
     statsMS.begin();
 
     update_speed_label()
-    if (earth.model){
+    if (earth.model && earth.pivot){
         earth.model.rotation.y += 0.001745 * speed_scale
         earth.pivot.rotation.y += 0.0012 * speed_scale
         const earth_pos = new THREE.Vector3()
         earth.model.getWorldPosition(earth_pos)
 
-        if(moon.model){
+        if(moon.model && moon.pivot){
             moon.pivot.position.set(earth_pos.x,earth_pos.y,earth_pos.z)
             moon.model.position.z = -25
             moon.model.rotation.y += 0.0005 * speed_scale
@@ -159,7 +168,7 @@ async function animate(){
     }
 
     
-    if (sun.model){
+    if (sun.model && sun.pivot){
         sun.pivot.rotation.y += 0.003 * speed_scale
         const sunPos = new THREE.Vector3()
         sun.pivot.getWorldPosition(sunPos)
@@ -178,7 +187,7 @@ async function animate(){
         else sun.clearText()
     }
     for (let i in asteroids){
-        if(asteroids[i].model){
+        if(asteroids[i].model && asteroids[i].pivot){
             asteroids[i].model.rotation.y += 0.001745 * speed_scale
             asteroids[i].pivot.rotation.y += asteroids_data[i].velocity * speed_scale
         }
@@ -188,25 +197,26 @@ async function animate(){
         setSelectedCamera(null)
 
     if(o_selected.asteroids){
-        for (let i in Object.keys(asteroids_stat)){
-            if(Object.values(asteroids_stat)[i]){
-                const pos = new THREE.Vector3()
-                asteroids[i].model.getWorldPosition(pos)
-                camera.position.set(pos.x, pos.y,pos.z+8)
-                asteroids[i].loadText(
-                    fontLoader,
-                    Body.generateInfo({
-                        "Name":Object.keys(asteroids_stat)[i], 
-                        "Id": asteroids_data[i].id, 
-                        "Velocity(Km/s)":asteroids_data[i].velocity * Asteroid.velocity_scale,
-                        "AVG Diameter(KM)":asteroids_data[i].diameter * 2 * Asteroid.scale_size,
-                        "Hazardous":asteroids_data[i].hazardous ? "YES" : "NO"
-                    }),
-                    {pos:new THREE.Vector3(pos.x + asteroids[i].scaleX + 5 , pos.y + asteroids[i].scaleY + 3 , pos.z)},
-                    0.25
-                )
-            }else asteroids[i].clearText()
-        }
+        for (let i in Object.keys(asteroids_stat))
+            if(asteroids[i]){
+                if(Object.values(asteroids_stat)[i]){
+                    const pos = new THREE.Vector3()
+                    asteroids[i].model.getWorldPosition(pos)
+                    camera.position.set(pos.x, pos.y,pos.z+8)
+                    asteroids[i].loadText(
+                        fontLoader,
+                        Body.generateInfo({
+                            "Name":Object.keys(asteroids_stat)[i], 
+                            "Id": asteroids_data[i].id, 
+                            "Velocity(Km/s)":asteroids_data[i].velocity * Asteroid.velocity_scale,
+                            "AVG Diameter(KM)":asteroids_data[i].diameter * 2 * Asteroid.scale_size,
+                            "Hazardous":asteroids_data[i].hazardous ? "YES" : "NO"
+                        }),
+                        {pos:new THREE.Vector3(pos.x + asteroids[i].scaleX + 5 , pos.y + asteroids[i].scaleY + 3 , pos.z)},
+                        0.25
+                    )
+                }else asteroids[i].clearText()
+            }
     }else
         if(asteroids)
             for (let asteroid of asteroids) 

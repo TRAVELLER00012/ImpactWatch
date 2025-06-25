@@ -223,8 +223,7 @@ function click_detection(select_detection,objects){
             let clickedObject = intersects[0].object
             while(clickedObject.parent && clickedObject.parent.name)
                 clickedObject = clickedObject.parent
-            console.log(clickedObject.name)
-
+            
             for (let key of Object.keys(objects))
                 if(key == clickedObject.name){
                     setSelectedCamera(key,select_detection.camera,true,false,objects)

@@ -116,21 +116,21 @@ export class Asteroids{
         }
     }
     async get_asteroid_data(start_date=this.start_date,end_date=this.end_date){
-        // console.log(start_date,end_date)
         let result = {}
-        // console.log(start_date,end_date)
-        if (!this.end_date)
+        try{
+            if (!this.end_date)
             result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&api_key=${api_key}`)
         else
             result = await axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&end_date=${end_date}&api_key=${api_key}`)
+        }catch(err){
+            console.log(err)
+        }
         result = result.data.near_earth_objects
-        console.log(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start_date}&end_date=${end_date}&api_key=${api_key}`)
         const keys = Object.keys(result)
         const converted_result = []
         for (let key of keys){
             const obj = result[key]
             for (let o of obj ){
-                // console.log(o)
                 converted_result.push({
                     "id":o.id,
                     "name":o.name,
@@ -141,7 +141,6 @@ export class Asteroids{
                 })
             }
         }
-        // console.log(converted_result)
         return converted_result
     }
 
