@@ -25,7 +25,7 @@ export class Body{
     }
     async load(){
         try{
-            const gltf = await this.loader.loadAsync(`./assets/models/${this.model_name}.glb`)
+            const gltf = await this.loader.loadAsync(`/assets/models/${this.model_name}.glb`)
             gltf.scene.scale.set(this.scaleX,this.scaleY,this.scaleZ)
             const box = new THREE.Box3().setFromObject(gltf.scene)
             const center = new THREE.Vector3()
@@ -50,7 +50,7 @@ export class Body{
     }
     async loadText(fontLoader,text,pos_stat = {model: this.model},size=2,Material=THREE.MeshStandardMaterial){
         try{
-            const font = await fontLoader.loadAsync("./assets/fonts/helvetiker_regular.typeface.json")
+            const font = await fontLoader.loadAsync("/assets/fonts/helvetiker_regular.typeface.json")
             const geo = new TextGeometry(text,{
                     font: font,
                     size: size,
