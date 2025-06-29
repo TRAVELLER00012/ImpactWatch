@@ -2,30 +2,7 @@ import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { FontLoader } from "three/addons/loaders/FontLoader.js"
 import { Body, Asteroids } from "./objects"
-import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date, add_log, asteroids_o, setSelectedAsteroids, show_error_screen, hide_loading_screen, show_loading_screen} from "./controls"
-import Stats from "stats.js"
-// TODO: Add cookies
-
-const statsFPS = new Stats();
-statsFPS.showPanel(0);
-
-const statsMS = new Stats();
-statsMS.showPanel(1);
-
-const statsMB = new Stats();
-statsMB.showPanel(2);
-
-statsFPS.dom.style.cssText = 'position:fixed;top:0;left:0;';
-statsMS.dom.style.cssText = 'position:fixed;top:48px;left:0;';
-statsMB.dom.style.cssText = 'position:fixed;top:96px;left:0;';
-
-document.body.appendChild(statsMB.dom);
-document.body.appendChild(statsMS.dom);
-document.body.appendChild(statsFPS.dom);
-
-statsFPS.dom.id = "statsFPS"
-statsMS.dom.id = "statsMS"
-statsMB.dom.id = "statsMB"
+import { keys, o_selected, initialize, setSelectedCamera, asteroids_stat, update_speed_label, speed_scale, set_date_labels, end_date,start_date, set_start_date, set_end_date, add_log, asteroids_o, setSelectedAsteroids, show_error_screen, hide_loading_screen, show_loading_screen,statsFPS,statsMB,statsMS} from "./controls"
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,100000)

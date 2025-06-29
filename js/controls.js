@@ -1,3 +1,6 @@
+import Stats from "stats.js"
+import { addCookie, getCookie } from "./cookies"
+
 export const keys = {
     "w":false,
     "s":false,
@@ -52,6 +55,27 @@ const option_logs = document.getElementById("option_logs")
 const error_screen = document.getElementById("error_screen")
 const error_button = document.getElementById("retry_button")
 
+
+export const statsFPS = new Stats();
+statsFPS.showPanel(0);
+
+export const statsMS = new Stats();
+statsMS.showPanel(1);
+
+export const statsMB = new Stats();
+statsMB.showPanel(2);
+
+statsFPS.dom.style.cssText = 'position:fixed;top:0;left:0;';
+statsMS.dom.style.cssText = 'position:fixed;top:48px;left:0;';
+statsMB.dom.style.cssText = 'position:fixed;top:96px;left:0;';
+
+document.body.appendChild(statsMB.dom);
+document.body.appendChild(statsMS.dom);
+document.body.appendChild(statsFPS.dom);
+
+statsFPS.dom.id = "statsFPS"
+statsMS.dom.id = "statsMS"
+statsMB.dom.id = "statsMB"
 let isRightMouseDown = false
 export let start_date = null
 export let end_date = null
@@ -110,8 +134,7 @@ window.addEventListener("load", () => {
     }
 })
 export function initialize(camera,asteroids = [],select_detection={},date_submit_callback = () =>{}){
-    
-
+    load_data()
 
     window.addEventListener("mousedown", (event) => {
         if (event.button === 0)
@@ -164,10 +187,12 @@ export function initialize(camera,asteroids = [],select_detection={},date_submit
     decrease_speed_button.onclick = () =>{
         if(speed_scale > 0) speed_scale-=0.5
         add_log("Speed was set to: " + speed_scale + "x")
+        save_data()
     }
     increase_speed_button.onclick = () =>{
         if(speed_scale <= 9.5) speed_scale+= 0.5
         add_log("Speed was set to: " + speed_scale + "x")
+        save_data()
     }
 
     date_submit.onclick = async () =>{
@@ -175,6 +200,7 @@ export function initialize(camera,asteroids = [],select_detection={},date_submit
         end_date = end_date_input.value
         add_log("Collecting asteroids from date: " + start_date + " to date: "+end_date)
         date_submit_callback()
+        save_data()
     }
     click_detection(detect_data,o_selected)
 
@@ -191,8 +217,17 @@ export function initialize(camera,asteroids = [],select_detection={},date_submit
     }
     show_hide_menu(parent_menu,side_menu_stats.select)
     show_hide_menu(logs,side_menu_stats.logs)
+    const statsFPS = document.getElementById("statsFPS")
+    const statsMB = document.getElementById("statsMB")
+    const statsMS = document.getElementById("statsMS")
+    show_hide_menu(statsFPS,side_menu_stats.stats)
+    show_hide_menu(statsMB,side_menu_stats.stats)
+    show_hide_menu(statsMS,side_menu_stats.stats)
+    
     show_hide_menu(date_control,side_menu_stats.date)
     show_hide_menu(speed_control,side_menu_stats.speed,"grid")  
+
+
     option_stats.onclick = () =>{
         const statsFPS = document.getElementById("statsFPS")
         const statsMB = document.getElementById("statsMB")
@@ -201,22 +236,27 @@ export function initialize(camera,asteroids = [],select_detection={},date_submit
         show_hide_menu(statsFPS,side_menu_stats.stats)
         show_hide_menu(statsMB,side_menu_stats.stats)
         show_hide_menu(statsMS,side_menu_stats.stats)
+        save_data()
     }
     option_select.onclick = () =>{
         side_menu_stats.select = !side_menu_stats.select
         show_hide_menu(parent_menu,side_menu_stats.select)
+        save_data()
     }
     option_logs.onclick = () =>{
         side_menu_stats.logs = !side_menu_stats.logs
         show_hide_menu(logs,side_menu_stats.logs)
+        save_data()
     }
     option_date.onclick = () =>{
         side_menu_stats.date = !side_menu_stats.date
         show_hide_menu(date_control,side_menu_stats.date)
+        save_data()
     }
     option_speed.onclick = () =>{
         side_menu_stats.speed = !side_menu_stats.speed
         show_hide_menu(speed_control,side_menu_stats.speed,"grid")  
+        save_data()
     }
 
     error_button.onclick = () => location.reload()
@@ -280,4 +320,24 @@ export function show_loading_screen(){
 export function hide_loading_screen(){
     const screen = document.getElementById("loading_screen")
     screen.style.display = "none"
+}
+
+function save_data(){
+    for (let i = 1; i < Object.keys(side_menu_stats).length; i++){
+        const key = Object.keys(side_menu_stats)[i]
+        addCookie("stats_"+key,side_menu_stats[key])
+    }
+
+    addCookie("speed",speed_scale)
+}
+
+function load_data(){
+    for (let i = 1; i < Object.keys(side_menu_stats).length; i++){
+        const key = Object.keys(side_menu_stats)[i]
+        const value = getCookie("stats_"+key)   
+        if (value) side_menu_stats[key] = value == "true"
+    }
+    const speed = getCookie("speed")
+    if(speed) speed_scale = parseFloat(speed)
+
 }
