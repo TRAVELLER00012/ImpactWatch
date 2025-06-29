@@ -149,7 +149,7 @@ async function animate(){
         if (o_selected.earth){
             camera.position.set(earth_pos.x,earth_pos.y ,earth_pos.z + 20)
             try{
-                earth.loadText(
+                await earth.loadText(
                     fontLoader,
                     Body.generateInfo({
                         "Name":"Earth",
@@ -170,7 +170,7 @@ async function animate(){
         if (o_selected.sun){
             camera.position.set(sunPos.x,sunPos.y ,sunPos.z + 80)
             try{
-                sun.loadText(
+                await sun.loadText(
                     fontLoader,
                     Body.generateInfo({
                         "Name":"Sun",
@@ -201,7 +201,7 @@ async function animate(){
                     asteroids[i].model.getWorldPosition(pos)
                     camera.position.set(pos.x, pos.y,pos.z+8)
                     try{
-                        asteroids[i].loadText(
+                        await asteroids[i].loadText(
                             fontLoader,
                             Body.generateInfo({
                                 "Name":Object.keys(asteroids_stat)[i], 
